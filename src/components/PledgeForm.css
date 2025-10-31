@@ -1,0 +1,18 @@
+/* Basic pledge form styles */
+.pledge-form .form-field 
+    { 
+    display:flex; 
+    flex-direction:column; 
+    gap:0.35rem; 
+    margin-bottom:0.6rem 
+    }
+
+.pledge-form input 
+    { 
+    padding:0.5rem; 
+    border-radius:6px; 
+    border:1px solid #e6e9ef}
+
+    .pledge-form .form-actions { margin-top:0.4rem }
+
+    .form-error { color:#ff4d4f; background:rgba(255,77,79,0.06); padding:0.5rem; border-radius:6px }

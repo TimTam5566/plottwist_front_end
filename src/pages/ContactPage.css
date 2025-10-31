@@ -1,0 +1,16 @@
+.contact-form {
+    display: grid;
+    gap: 8px;
+    max-width: 560px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #e6e9ef;
+}
+
+.contact-form button {
+    width: fit-content;
+}

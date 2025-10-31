@@ -1,0 +1,27 @@
+/* Simple page wrapper for project creation */.create-page {    padding: 2rem;    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.create-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+.create-card h2 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.create-card a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.create-card a:hover {
+    text-decoration: underline;
+}
