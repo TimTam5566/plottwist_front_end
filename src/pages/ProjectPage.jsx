@@ -5,18 +5,31 @@ import PledgeForm from "../components/PledgeForm";
 function ProjectPage() {
     const { id } = useParams();
     const [project, setProject] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
+        setLoading(true);
+        setError(null);
         fetch(`https://plot-twist-you-are-the-author-fdc848555cc9.herokuapp.com/projects/${id}/`)
-            .then(res => res.json())
-            .then(data => setProject(data));
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Error fetching project: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(data => setProject(data))
+            .catch(err => setError(err.message))
+            .finally(() => setLoading(false));
     }, [id]);
 
     return (
         <div>
             <h2>Project Details</h2>
             <p>Project ID: {id}</p>
-            {project && (
+            {loading && <p>Loading...</p>}
+            {error && <p style={{ color: "red" }}>Error: {error}</p>}
+            {project && !error && (
                 <>
                     <h3>{project.title}</h3>
                     <img
