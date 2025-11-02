@@ -23,7 +23,7 @@ Project Requirements
     -   Title (done)
     -   Owner (a user)
     -   Description (done)
-    -   Image
+    -   Image (done)
     -   Target amount to raise 
     -   Whether it is currently open to accepting new supporters or not (done)
     -   When the fundraiser was created (done)

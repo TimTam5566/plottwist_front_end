@@ -96,6 +96,12 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
         }
     };
 
+    const formatContent = (content) => {
+        return content.split(/\n\n+/).map((paragraph, index) => (
+            <p key={index}>{paragraph.trim()}</p>
+        ));
+    };
+
     return (
         <form onSubmit={handleSubmit}>
             <h2>Create a Project</h2>
@@ -146,19 +152,34 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
             </select>
             {validationErrors.content_type && <p style={{ color: "red" }}>{validationErrors.content_type}</p>}
 
-            <label htmlFor="starting_content">
-                Starting Content *
-            </label>
-            <textarea
-                id="starting_content"
-                value={formData.starting_content}
-                onChange={handleChange}
-                rows="10"
-                maxLength="5000"
-                placeholder="Enter your starting content here..."
-            />
-            {validationErrors.starting_content && (
-                <p style={{ color: "red" }}>{validationErrors.starting_content}</p>
+            <div className="form-group">
+                <label htmlFor="starting_content">Starting Content *</label>
+                <textarea
+                    id="starting_content"
+                    value={formData.starting_content}
+                    onChange={handleChange}
+                    rows="10"
+                    maxLength="5000"
+                    placeholder="Enter your starting content here... Press Enter twice for new paragraphs."
+                    style={{
+                        whiteSpace: "pre-wrap",
+                        minHeight: "200px",
+                        padding: "10px",
+                        lineHeight: "1.5"
+                    }}
+                />
+                {validationErrors.starting_content && (
+                    <p className="error">{validationErrors.starting_content}</p>
+                )}
+            </div>
+
+            {formData.starting_content && (
+                <div className="content-preview">
+                    <h4>Content Preview:</h4>
+                    <div className="formatted-content">
+                        {formatContent(formData.starting_content)}
+                    </div>
+                </div>
             )}
 
             <label htmlFor="goal">Verse or Paragraph Amount *</label>

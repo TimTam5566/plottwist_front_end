@@ -10,6 +10,13 @@ function PledgeForm({ projectId, onSuccess }) {
 
     const { createPledge, isLoading, error, success } = useCreatePledge();
 
+    const formatContent = (content) => {
+        // Split content by double newlines for paragraphs
+        return content.split(/\n\n+/).map((paragraph, index) => (
+            <p key={index}>{paragraph.trim()}</p>
+        ));
+    };
+
     const handleChange = (event) => {
         const { id, value, type, checked } = event.target;
         setFormData((prev) => ({
@@ -74,12 +81,28 @@ function PledgeForm({ projectId, onSuccess }) {
                 <label htmlFor="add_content">Your Contribution *</label>
                 <textarea
                     id="add_content"
-                    placeholder="Add your verse or paragraph here..."
+                    placeholder="Add your verse or paragraph here... Press Enter twice for new paragraphs."
                     value={formData.add_content}
                     onChange={handleChange}
                     required
+                    rows="10"
+                    style={{
+                        whiteSpace: "pre-wrap",
+                        minHeight: "150px",
+                        padding: "10px",
+                        lineHeight: "1.5"
+                    }}
                 />
             </div>
+
+            {formData.add_content && (
+                <div className="content-preview">
+                    <h4>Preview:</h4>
+                    <div className="formatted-content">
+                        {formatContent(formData.add_content)}
+                    </div>
+                </div>
+            )}
 
             <div>
                 <label htmlFor="anonymous">

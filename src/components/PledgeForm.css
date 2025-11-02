@@ -16,3 +16,21 @@
     .pledge-form .form-actions { margin-top:0.4rem }
 
     .form-error { color:#ff4d4f; background:rgba(255,77,79,0.06); padding:0.5rem; border-radius:6px }
+
+.content-preview {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.formatted-content p {
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+textarea {
+    font-family: inherit;
+    width: 100%;
+    resize: vertical;
+}

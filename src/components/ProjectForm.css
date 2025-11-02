@@ -169,3 +169,40 @@ textarea#content_start{
     content: " *";
     color: #dc2626;
 }
+
+.content-preview {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e6e9ef;
+}
+
+.content-preview h4 {
+    margin-bottom: 1rem;
+    color: #666;
+}
+
+.formatted-content p {
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.formatted-content p:last-child {
+    margin-bottom: 0;
+}
+
+textarea {
+    font-family: inherit;
+    width: 100%;
+    resize: vertical;
+    border: 1px solid #e6e9ef;
+    border-radius: 8px;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #4096ff;
+    box-shadow: 0 0 0 2px rgba(64, 150, 255, 0.1);
+}
