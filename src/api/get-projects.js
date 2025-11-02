@@ -9,7 +9,12 @@ async function getProjects() {
     // We can use the `ok` property on `response` to check if the request was successful.
     // If the request was not successful then we will throw an error...
     if (!response.ok) {
-        const fallbackError = "Error fetching projects";
+        const fallbackError = 
+            "the page turned, but the ink did not follow" + 
+            "No pledges appear, though we called them by name. " +
+            "Perhaps they are wandering — lost in the margins, " +
+            "or caught between commas in the cloud. Try again soon, " +
+            "or refresh the tale. Every story waits to be found.";
 
       // Here we use the `await` keyword to signal to Javascript that it shouldn't run this code until `response` gets turned into JSON
         const data = await response.json().catch(() => {

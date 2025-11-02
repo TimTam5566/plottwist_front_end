@@ -10,6 +10,7 @@ function HomePage() {
     if (isLoading) {
         return (
             <div className="page-wrap">
+                <h1>Welcome to Plot Twist!</h1>
                 <div className="muted">Loading projects…</div>
             </div>
         );
@@ -18,6 +19,7 @@ function HomePage() {
     if (error) {
         return (
             <div className="page-wrap">
+                <h1>Welcome to Plot Twist!</h1>
                 <div role="alert">
                     <p className="muted">Error loading projects: {error.message}</p>
                     <button onClick={refetch} disabled={isLoading}>
@@ -28,19 +30,20 @@ function HomePage() {
         );
     }
 
-    // Make sure projects exists before mapping
     return (
-        <div className="project-list">
-            {projects && projects.length > 0 ? (
-                projects.map((project) => (
-                    <ProjectCard key={project.id} project={project} />
-                ))
-            ) : (
-                <p>No projects available</p>
-            )}
+        <div className="page-wrap">
+            <h1>Welcome to Plot Twist!</h1>
+            <div className="project-list">
+                {projects && projects.length > 0 ? (
+                    projects.map((project) => (
+                        <ProjectCard key={project.id} project={project} />
+                    ))
+                ) : (
+                    <p>No projects available</p>
+                )}
+            </div>
         </div>
     );
 }
 
 export default HomePage;
-

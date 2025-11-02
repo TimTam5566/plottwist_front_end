@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/use-auth";
 
 function LoginForm() {
     const navigate = useNavigate();
-    const { auth, setAuth } = useAuth();
+    const { auth, handleLogin } = useAuth();
     const [formData, setFormData] = useState({
         username: "",
         password: "",
@@ -21,32 +21,26 @@ function LoginForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
-
         try {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/api-token-auth/`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(formData),
-                }
-            );
-
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api-token-auth/`, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: formData.username,
+                    password: formData.password,
+                }),
+            });
             const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.non_field_errors?.[0] || "Login failed");
+            if (response.ok) {
+                handleLogin(data.token, data.user_id);
+                navigate("/");
+            } else {
+                setError(data.detail);
             }
-
-            window.localStorage.setItem("token", data.token);
-            setAuth({ token: data.token });
-            navigate("/");
-
         } catch (err) {
-            setError(err.message);
+            setError("Something went wrong. Please try again later.");
         }
     };
 
