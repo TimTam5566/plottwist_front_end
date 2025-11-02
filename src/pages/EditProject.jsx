@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import putProject from "../api/put-project";
 import getProject from "../api/get-project";
 import { API_URL } from "../config";
+import "./EditProject.css";
 
 function EditProject() {
     const { id } = useParams();

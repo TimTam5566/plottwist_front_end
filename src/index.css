@@ -1,169 +1,82 @@
+/* CSS Variables */
 :root {
-	--bg: #f5ecd7;
-	--card: #ffffff;
-	--text: #0f1724;
-	--muted: #6b7280;
-	--accent: #2563eb;
-	--purple: #7c3aed;
-	--danger: #ef4444;
-	--radius: 12px;
-	--shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
-	--container-max: 1100px;
-	--gap: 1rem;
-	--font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-	--button-shadow: 0 4px 10px rgba(37, 99, 235, 0.08);
+    --bg: #f5ecd7;
+    --card: #ffffff;
+    --text: #0f1724;
+    --muted: #64748b;
+    --accent: #2563eb;
+    --purple: #7c3aed;
+    --purple-dark: #5b21b6;
+    --danger: #ef4444;
+    --radius: 12px;
+    --shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
+    --container-max: 1100px;
+    --gap: 1rem;
+    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    --button-shadow: 0 4px 10px rgba(37, 99, 235, 0.08);
 }
 
-/* Box sizing + base */
+/* Base Styles */
 *,
 *::before,
 *::after {
-	box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html,
 body,
 #root {
-	height: 100%;
+    height: 100%;
 }
 
 body {
-	margin: 0;
-	font-family: var(--font-sans);
-	background: var(--bg);
-	color: var(--text);
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	line-height: 1.45;
-	font-size: 16px;
+    margin: 0;
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.45;
+    font-size: 16px;
 }
 
-/* App container */
+/* Global Layout */
 .app-container {
-	max-width: var(--container-max);
-	margin: 0 auto;
-	padding: 1.25rem;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 1.25rem;
 }
 
-/* Accessible focus */
+/* Global Page Wrapper */
+.page-wrap {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: var(--gap);
+}
+
+/* Global Utilities */
+.muted {
+    color: var(--muted);
+}
+
+/* Global Accessibility */
 :focus {
-	outline: none;
+    outline: none;
 }
 
 :focus-visible {
-	outline: 3px solid rgba(37, 99, 235, 0.15);
-	outline-offset: 2px;
-	border-radius: 6px;
+    outline: 3px solid rgba(37, 99, 235, 0.15);
+    outline-offset: 2px;
+    border-radius: 6px;
 }
 
-/* Utilities */
-.muted {
-	color: var(--muted);
-}
-
-/* Nav */
-nav {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 12px;
-	padding: 12px 18px;
-	background: var(--card);
-	border-radius: var(--radius);
-	box-shadow: var(--shadow);
-	margin-bottom: 18px;
-}
-
-nav .nav-links {
-	display: flex;
-	gap: 12px;
-	align-items: center;
-}
-
-nav a {
-	color: var(--accent);
-	text-decoration: none;
-	font-weight: 600;
-	padding: 6px 8px;
-	border-radius: 8px;
-}
-
-nav a:hover {
-	background: rgba(37, 99, 235, 0.06);
-}
-
-/* Buttons */
-.button {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	gap: 0.5rem;
-	padding: 0.6rem 1rem;
-	border-radius: 8px;
-	border: none;
-	background: var(--accent);
-	color: #7c3aed; /* Purple text */
-	cursor: pointer;
-	font-weight: 600;
-	transition: transform .12s ease, box-shadow .12s ease;
-	box-shadow: var(--button-shadow);
-}
-
-.button:disabled {
-	opacity: 0.6;
-	cursor: not-allowed;
-	transform: none;
-}
-
-.button.secondary {
-	background: transparent;
-	color: var(--purple);
-	border: 1px solid rgba(37, 99, 235, 0.12);
-	box-shadow: none;
-}
-
-/* Forms and inputs */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-textarea,
-select {
-	width: 100%;
-	padding: 0.65rem 0.75rem;
-	border-radius: 8px;
-	border: 1px solid #e6e9ef;
-	background: white;
-	font-size: 0.95rem;
-	color: var(--text);
-}
-
-label {
-	display: block;
-	margin-bottom: 0.5rem;
-	font-weight: 600;
-}
-
-.form-row {
-	margin-bottom: 0.75rem;
-}
-
-/* Form container (auth / generic) */
-.form-card {
-	background: var(--card);
-	padding: 1.25rem;
-	border-radius: 10px;
-	box-shadow: var(--shadow);
-	max-width: 640px;
-	margin: 1rem auto;
-}
-
-/* Responsive */
+/* Global Responsive */
 @media (max-width: 640px) {
-	.app-container {
-		padding: 0.75rem;
-	}
+    .app-container, .page-wrap {
+        padding: 0.75rem;
+    }
 
-	:root {
-		--container-max: 100%;
-	}
+    :root {
+        --container-max: 100%;
+    }
 }

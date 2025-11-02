@@ -2,30 +2,27 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useCreateProject from "../hooks/use-create-project";
 import putProject from "../api/put-project";
+import "./ProjectForm.css";
 
 
 function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData }) {
+    const [validationErrors, setValidationErrors] = useState({});
     const [formData, setFormData] = useState(initialData || {
         title: "",
         description: "",
         genre: "",
         content_type: "",
         starting_content: "",
+        current_content: "",
         goal: "",
         is_open: true,
+        date_created: new Date().toISOString()
     });
+    
     const [imageFile, setImageFile] = useState(null);
-    const { createProject, isLoading, error, success } = useCreateProject();
+    const [imagePreview, setImagePreview] = useState(initialData?.image || null);
+    const { createProject, isLoading, error } = useCreateProject();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (formData.genre) {
-            setFormData(prev => ({
-                ...prev,
-                image: genreImages[formData.genre] || "",
-            }));
-        }
-    }, [formData.genre]);
 
     const validateForm = () => {
         const newErrors = {};
@@ -36,7 +33,8 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
         if (!formData.starting_content.trim()) newErrors.starting_content = "Starting content is required.";
         if (!formData.goal) newErrors.goal = "Verse or Paragraph amount is required.";
         else if (Number(formData.goal) <= 0) newErrors.goal = "Goal must be positive.";
-        if (!formData.image.trim() || !formData.image.startsWith("http")) newErrors.image = "Image must be a valid URL.";
+        // Removed image URL validation since we're using file upload
+
         setValidationErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -45,12 +43,24 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
         const { id, type, checked, files } = e.target;
         
         if (id === 'image' && files?.length) {
-            setImageFile(files[0]);
+            const file = files[0];
+            setImageFile(file);
+            // Create preview URL for the selected image
+            const previewUrl = URL.createObjectURL(file);
+            setImagePreview(previewUrl);
         } else {
             setFormData(prev => ({
                 ...prev,
                 [id]: type === "checkbox" ? checked : e.target.value,
             }));
+        }
+
+        if (validationErrors[id]) {
+            setValidationErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[id];
+                return newErrors;
+            });
         }
     };
 
@@ -58,43 +68,51 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
         e.preventDefault();
         if (!validateForm()) return;
 
-        const projectData = {
-            title: formData.title,
-            description: formData.description,
-            genre: formData.genre,
-            goal: Number(formData.goal),
-            image: formData.image,
-            is_open: formData.is_open,
-            starting_content: formData.starting_content, // or formData.start if that's your state
+        // Use FormData for file upload
+        const formDataToSend = new FormData();
+        
+        // Append all form fields
+        Object.keys(formData).forEach(key => {
+            if (key !== 'image') { // Skip image field as we'll handle it separately
+                formDataToSend.append(key, formData[key]);
+            }
+        });
+
+        // Append the image file if one is selected
+        if (imageFile) {
+            formDataToSend.append('image', imageFile);
+        }
+
+        try {
+            if (isEditMode) {
+                await putProject(projectId, formDataToSend);
+            } else {
+                await createProject(formDataToSend);
+            }
+            
+            if (onSuccess) onSuccess();
+            
+            // Cleanup
+            if (imagePreview) {
+                URL.revokeObjectURL(imagePreview);
+            }
+        } catch (err) {
+            console.error("Error:", err);
+            setValidationErrors(prev => ({
+                ...prev,
+                api: err.message || "Failed to save project"
+            }));
+        }
+    };
+
+    // Cleanup preview URL when component unmounts
+    React.useEffect(() => {
+        return () => {
+            if (imagePreview && !initialData?.image) {
+                URL.revokeObjectURL(imagePreview);
+            }
         };
-
-        try {
-            await createProject(projectData);
-            if (onSuccess) onSuccess();
-            setFormData({
-                title: "",
-                description: "",
-                genre: "",
-                content_type: "",
-                starting_content: "",
-                goal: "",
-                image: "",
-                is_open: true,
-            });
-        } catch (error) {
-            // Error handling as needed
-        }
-    };
-
-    const handleEdit = async (e) => {
-        e.preventDefault();
-        try {
-            await putProject(projectId, formData);
-            if (onSuccess) onSuccess();
-        } catch (error) {
-            // handle error
-        }
-    };
+    }, [imagePreview, initialData]);
 
     const formatContent = (content) => {
         return content.split(/\n\n+/).map((paragraph, index) => (
@@ -103,11 +121,10 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="project-form" encType="multipart/form-data">
             <h2>Create a Project</h2>
 
             {error && <p style={{ color: "red" }}>{error}</p>}
-            {success && <p style={{ color: "green" }}>Project Created</p>}
 
             <label htmlFor="title">Title *</label>
             <input id="title" value={formData.title} onChange={handleChange} />
@@ -158,7 +175,6 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
                     id="starting_content"
                     value={formData.starting_content}
                     onChange={handleChange}
-                    rows="10"
                     maxLength="5000"
                     placeholder="Enter your starting content here... Press Enter twice for new paragraphs."
                     style={{
@@ -191,24 +207,6 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
             />
             {validationErrors.goal && <p style={{ color: "red" }}>{validationErrors.goal}</p>}
 
-            <div className="image-preview">
-                {formData.genre && (
-                    <>
-                        <label>Selected Image</label>
-                        <img 
-                            src={formData.image} 
-                            alt={`${formData.genre} category`}
-                            style={{ 
-                                maxWidth: '200px', 
-                                display: 'block',
-                                margin: '10px auto',
-                                borderRadius: '4px'
-                            }}
-                        />
-                    </>
-                )}
-            </div>
-
             <div className="form-group">
                 <label htmlFor="image">Project Image</label>
                 <input
@@ -217,6 +215,20 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
                     accept="image/*"
                     onChange={handleChange}
                 />
+                {imagePreview && (
+                    <div className="image-preview">
+                        <img 
+                            src={imagePreview} 
+                            alt="Project preview"
+                            style={{ 
+                                maxWidth: '200px', 
+                                display: 'block',
+                                margin: '10px 0',
+                                borderRadius: '4px'
+                            }}
+                        />
+                    </div>
+                )}
             </div>
 
             <button type="submit" disabled={isLoading}>

@@ -1,13 +1,13 @@
 import React from 'react';
+import AboutPageInfo from '../components/AboutPageInfo';
+import './AboutPage.css';
 
 function AboutPage() {
     return (
-        <div className="about-page">
-            <h1>About Plot Twist</h1>
-            <p>A collaborative writing platform where stories come to life.</p>
+        <div className="page-wrap">
+            <AboutPageInfo />
         </div>
     );
 }
 
-// Add the default export
 export default AboutPage;

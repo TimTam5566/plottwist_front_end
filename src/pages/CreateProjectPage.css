@@ -1,4 +1,6 @@
-/* Simple page wrapper for project creation */.create-page {    padding: 2rem;    display: flex;
+/* Simple page wrapper for project creation */
+
+.create-page {
     justify-content: center;
     align-items: flex-start;
 }

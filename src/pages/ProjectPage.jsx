@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import PledgeForm from "../components/PledgeForm";
 import { useAuth } from "../hooks/use-auth";
 import { API_URL } from "../config";
+import "./ProjectPage.css";
 
 function ProjectPage() {
     const { auth } = useAuth();
@@ -58,6 +59,21 @@ function ProjectPage() {
             .finally(() => setLoading(false));
     }, [id, auth?.token]);
 
+    const getContentLabel = (contentType) => {
+        return contentType === 'poem' ? 'Verses' : 'Paragraphs';
+    };
+
+    const calculateProgress = (currentContent) => {
+        if (!currentContent) return 0;
+        const segments = project.content_type === 'poem' 
+            ? currentContent.split('\n').filter(line => line.trim().length > 0)
+            : currentContent.split(/\n\n+/).filter(para => para.trim().length > 0);
+        
+        const count = segments.length;
+        const percentage = (count / project.goal) * 100;
+        return Math.min(percentage, 100);
+    };
+
     const getImageUrl = (image) => {
         if (!image) return "/images/default.jpg";
         if (image.startsWith('/media/')) {
@@ -100,6 +116,28 @@ function ProjectPage() {
                     <pre>{project.starting_content}</pre>
                     <p><strong>Current Content:</strong></p>
                     <pre>{project.current_content}</pre>
+
+                    <div className="progress-section">
+                        <h4>Progress Tracker</h4>
+                        <div className="progress-bar">
+                            <div 
+                                className="progress-fill"
+                                style={{ width: `${calculateProgress(project.current_content)}%` }}
+                            />
+                        </div>
+                        <p className="progress-text">
+                            {getContentLabel(project.content_type)}: 
+                            {' '}
+                            {project.current_content
+                                ? project.content_type === 'poem'
+                                    ? project.current_content.split('\n').filter(line => line.trim().length > 0).length
+                                    : project.current_content.split(/\n\n+/).filter(para => para.trim().length > 0).length
+                                : 0
+                            }
+                            {' '}/ {project.goal}
+                        </p>
+                    </div>
+
                     <p><strong>Open for contributions:</strong> {project.is_open ? "Yes" : "No"}</p>
                     <p><strong>Date Created:</strong> {new Date(project.date_created).toLocaleString()}</p>
                     <PledgeForm projectId={project.id} />
