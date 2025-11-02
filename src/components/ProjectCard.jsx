@@ -1,25 +1,34 @@
-import { Link } from "react-router-dom";
-import { useState } from "react"; // Add this import
-import { getGenreImage } from "../data/genreImages";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { API_URL } from '../config';
+import './ProjectCard.css';
 
 function ProjectCard({ project }) {
-    const [imgError, setImgError] = useState(false);
-    const imageUrl = imgError ? "/images/default.jpg" : getGenreImage(project.genre);
+    const defaultImage = '/images/default.jpg';
+
+    // Function to handle image URLs as per backend recommendation
+    const getImageUrl = (image) => {
+        if (!image) return defaultImage;
+        if (image.startsWith('http')) return image;
+        return `${API_URL}${image}`;
+    };
 
     return (
         <div className="project-card">
             <Link to={`/project/${project.id}`}>
                 <img
-                    src={imageUrl}
-                    alt={`${project.genre} project`}
-                    onError={(e) => {
-                        console.error(`Failed to load image: ${e.target.src}`);
-                        setImgError(true);
-                    }}
+                    src={getImageUrl(project.image)}
+                    alt={project.title || "Project"}
                     className="project-image"
+                    onError={(e) => {
+                        console.error(`Image load failed for project ${project.id}:`, project.image);
+                        e.target.src = defaultImage;
+                    }}
                 />
-                <h3>{project.title || "Untitled Project"}</h3>
-                <p>{project.description || "No description available"}</p>
+                <div className="project-card__content">
+                    <h3>{project.title}</h3>
+                    <p>{project.description}</p>
+                </div>
             </Link>
         </div>
     );

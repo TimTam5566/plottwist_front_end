@@ -3,6 +3,7 @@ import ProjectCard from "../components/ProjectCard";
 import "./HomePage.css";
 import { useState } from "react";
 
+
 function HomePage() {
     const { projects, isLoading, error, refetch } = useProjects();
     const [projectsState, setProjectsState] = useState([]);

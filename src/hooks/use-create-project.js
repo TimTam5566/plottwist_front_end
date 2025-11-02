@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { API_URL } from "../config";
+
 export default function useCreateProject() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -10,17 +12,14 @@ export default function useCreateProject() {
         setError(null);
 
         try {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/projects/`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Token ${localStorage.getItem("token")}`,
-                    },
-                    body: JSON.stringify(projectData),
-                }
-            );
+            const response = await fetch(`${API_URL}/projects/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(projectData),
+            });
 
             const data = await response.json();
 

@@ -1,7 +1,7 @@
 .project-image {
-    width: 50%;
-    height: 100px;
-    object-fit: cover;
+    width: 100%;        /* Change from 50% to 100% to fill card width */
+    height: 150px;      /* Increase from 100px to 150px for taller images */
+    object-fit: cover;  /* Maintains aspect ratio */
     border-radius: 8px;
 }
 

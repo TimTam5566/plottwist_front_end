@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-
 import getProjects from "../api/get-projects";
 
 export default function useProjects() {
@@ -20,6 +19,7 @@ export default function useProjects() {
       setProjects(data);
     } catch (err) {
       setError(err);
+      console.error("The library gnomes are on strike. No projects today, but we’re negotiating with biscuits.", err);
     } finally {
       setIsLoading(false);
     }

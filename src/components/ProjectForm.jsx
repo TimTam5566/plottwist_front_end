@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import useCreateProject from "../hooks/use-create-project";
 import putProject from "../api/put-project";
 import { genreImages } from "../data/genreImages";
@@ -17,6 +18,7 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
 
     const [validationErrors, setValidationErrors] = useState({});
     const { createProject, isLoading, error, success } = useCreateProject();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (formData.genre) {
@@ -42,12 +44,18 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
     };
 
     const handleChange = (e) => {
-        const { id, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [id]: value,
-            ...(id === 'genre' ? { image: genreImages[value] || "" } : {})
-        }));
+        const { id, value, files } = e.target;
+        if (id === 'image' && files) {
+            setFormData(prev => ({
+                ...prev,
+                image: files[0]
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [id]: value,
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -182,6 +190,16 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
                         />
                     </>
                 )}
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="image">Project Image</label>
+                <input
+                    type="file"
+                    id="image"
+                    accept="image/*"
+                    onChange={handleChange}
+                />
             </div>
 
             <button type="submit" disabled={isLoading}>

@@ -25,7 +25,7 @@ function EditProject() {
                 const data = await getProject(id);
                 setFormData(data);
             } catch (err) {
-                setError("Failed to load project");
+                setError("Failed to load projectThe ink refused to flow. Your edits remain trapped in the margins — try again, brave scribe!");
             }
         };
         fetchProject();
