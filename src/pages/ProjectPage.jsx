@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import PledgeForm from "../components/PledgeForm";
 import { useAuth } from "../hooks/use-auth";
+import { API_URL } from "../config";
 
 function ProjectPage() {
     const { auth } = useAuth();
@@ -57,6 +58,17 @@ function ProjectPage() {
             .finally(() => setLoading(false));
     }, [id, auth?.token]);
 
+    const getImageUrl = (image) => {
+        if (!image) return "/images/default.jpg";
+        if (image.startsWith('/media/')) {
+            return `${API_URL}${image}`;
+        }
+        if (image.startsWith('http')) {
+            return image.replace('/media/https://', 'https://');
+        }
+        return "/images/default.jpg";
+    };
+
     return (
         <div className="page-wrap">
             <h2>Project Details</h2>
@@ -73,17 +85,12 @@ function ProjectPage() {
                         )}
                     </div>
                     <img
-                        src={project.image || "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg"}
+                        src={getImageUrl(project.image)}
                         alt={project.title}
                         className="project-image"
-                        onError={e => {
-                            if (!e.target.dataset.fallback) {
-                                e.target.src = "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg";
-                                e.target.dataset.fallback = "true";
-                            } else {
-                                e.target.onerror = null;
-                                e.target.src = "";
-                            }
+                        onError={(e) => {
+                            console.error(`Like a ghost in a gothic novel, the image flickered… and disappeared. Try again, if you dare ${project.id}:`, project.image);
+                            e.target.src = "/images/default.jpg";
                         }}
                     />
                     <p><strong>Description:</strong> {project.description}</p>

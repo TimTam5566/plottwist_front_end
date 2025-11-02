@@ -22,11 +22,11 @@ function PledgeForm({ projectId, onSuccess }) {
         event.preventDefault();
 
         if (!formData.amount || Number(formData.amount) <= 0) {
-            alert("Please enter a valid pledge amount.");
+            alert("Your pledge must be numeric, noble, and not imaginary. The poets thank you in advance.");
             return;
         }
         if (!formData.add_content.trim()) {
-            alert("Please enter your contribution.");
+            alert("Your contribution must be a heartfelt addition to the tapestry of creativity.");
             return;
         }
 

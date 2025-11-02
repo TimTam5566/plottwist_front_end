@@ -1,18 +1,23 @@
-async function putProject(projectId, updatedData) {
-    const url = `${import.meta.env.VITE_API_URL}/projects/${projectId}/`;
+import { API_URL } from "../config";
+
+async function putProject(id, formData) {
     const token = localStorage.getItem("token");
-    const response = await fetch(url, {
+    
+    const response = await fetch(`${API_URL}/projects/${id}/`, {
         method: "PUT",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Token ${token}`
+            Authorization: `Token ${token}`,
+            // Do not set Content-Type - browser will set it automatically for FormData
         },
-        body: JSON.stringify(updatedData)
+        body: formData
     });
+
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Failed to update project");
+        const data = await response.json();
+        throw new Error(data.detail || "The ink refused to flow. Your edits remain trapped in the margins — try again, brave scribe!");
     }
-    return await response.json();
+
+    return response.json();
 }
+
 export default putProject;

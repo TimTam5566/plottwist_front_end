@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useCreateProject from "../hooks/use-create-project";
 import putProject from "../api/put-project";
-import { genreImages } from "../data/genreImages";
+
 
 function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData }) {
     const [formData, setFormData] = useState(initialData || {
@@ -12,11 +12,9 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
         content_type: "",
         starting_content: "",
         goal: "",
-        image: "",
         is_open: true,
     });
-
-    const [validationErrors, setValidationErrors] = useState({});
+    const [imageFile, setImageFile] = useState(null);
     const { createProject, isLoading, error, success } = useCreateProject();
     const navigate = useNavigate();
 
@@ -44,16 +42,14 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
     };
 
     const handleChange = (e) => {
-        const { id, value, files } = e.target;
-        if (id === 'image' && files) {
-            setFormData(prev => ({
-                ...prev,
-                image: files[0]
-            }));
+        const { id, type, checked, files } = e.target;
+        
+        if (id === 'image' && files?.length) {
+            setImageFile(files[0]);
         } else {
             setFormData(prev => ({
                 ...prev,
-                [id]: value,
+                [id]: type === "checkbox" ? checked : e.target.value,
             }));
         }
     };
