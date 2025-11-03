@@ -4,9 +4,27 @@ import useCreateProject from "../hooks/use-create-project";
 import postProject from "../api/post-project";
 import "./ProjectForm.css";
 import { useAuth } from "../hooks/use-auth";
+import { useProject } from "../hooks/use-project"; // Updated import
 
 
 function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData }) {
+    // Update existing debug log to include more detail
+    console.log('ProjectForm mounted:', { 
+        projectId, 
+        initialData,
+        hasProject: Boolean(project),
+        projectData: project
+    });
+
+    // Add useEffect to track project data changes
+    useEffect(() => {
+        console.log('Project data updated:', {
+            projectId,
+            project,
+            initialData
+        });
+    }, [projectId, project, initialData]);
+
     const { auth } = useAuth();
     const navigate = useNavigate();
     const [error, setError] = useState("");
@@ -25,7 +43,8 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
     
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(initialData?.image || null);
-    const { createProject, isLoading, error: apiError } = useCreateProject();
+    const { createProject, isLoading } = useCreateProject();
+    const { project } = useProject(projectId);
 
     const validateForm = (data) => {
         const errors = {};
@@ -95,48 +114,33 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('Submitting project with data:', {
+            formData,
+            auth,
+            projectId
+        });
+
+        // Validate form before submission
+        const errors = validateForm(formData);
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            return;
+        }
 
         try {
-            const userId = parseInt(localStorage.getItem("userId"));
-            const formDataToSend = new FormData();
-            
-            // Append all form fields except image
-            Object.keys(formData).forEach(key => {
-                if (key !== 'image') {
-                    formDataToSend.append(key, formData[key]);
-                }
-            });
-            
-            // Add owner field
-            formDataToSend.append('owner', userId);
-            
-            // Handle image separately
-            if (imageFile) {
-                formDataToSend.append('image', imageFile);
-            }
-
-            // Debug log to verify FormData contents
-            console.log("FormData entries:", [...formDataToSend.entries()]);
-
-            const response = await postProject({
-                title: formData.title,
-                description: formData.description,
-                goal: formData.goal,
-                genre: formData.genre,
-                startingVerseParagraph: formData.starting_content,
-                image: imageFile,
-                owner: userId,
-                content_type: formData.content_type,
-                is_open: formData.is_open,
-                current_content: formData.current_content
-            });
+            const response = await postProject(
+                formData,
+                auth.token,
+                auth.user_id
+            );
 
             if (response?.id) {
                 navigate(`/project/${response.id}`);
             }
 
         } catch (err) {
-            setError("The magical quill seems to have run dry. Check your enchantments and try again!");
+            // Maintain existing creative error message
+            setError("Alas! The magical quill has run dry. Our story stumbled on its way to the library. Perhaps Mercury is in retrograde, or the muse is taking a coffee break. Let's try that again, shall we?");
             console.error("Form submission error:", err);
         }
     };
@@ -171,7 +175,7 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
         <form onSubmit={handleSubmit} className="project-form" encType="multipart/form-data">
             <h2>Create a Project</h2>
 
-            {(apiError || error) && (
+            {(error) && (
                 <div className="error-message api-error">
                     <p>{"Alas! The magical quill has run dry. Our story stumbled on its way to the library. Perhaps Mercury is in retrograde, or the muse is taking a coffee break. Let's try that again, shall we?"}</p>
                 </div>

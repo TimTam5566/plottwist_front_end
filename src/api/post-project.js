@@ -1,41 +1,39 @@
-// src/api/post-project.js
-async function postProject(projectData) {
-    const url = `${import.meta.env.VITE_API_URL}/projects/`;
-    const token = window.localStorage.getItem("token");
+import { useAuth } from "../hooks/use-auth";
 
-    // Create FormData object
+async function postProject(projectData, authToken, userId) {
+    const url = `${import.meta.env.VITE_API_URL}/projects/`;
+    
+    if (!authToken || !userId) {
+        throw new Error('Authentication required');
+    }
+
+    const ownerId = Number(userId);
+    
+    if (isNaN(ownerId)) {
+        throw new Error('Invalid user ID format');
+    }
+
     const formData = new FormData();
     formData.append("title", projectData.title);
     formData.append("description", projectData.description);
-    formData.append("goal", parseFloat(projectData.goal));
+    formData.append("goal", projectData.goal);
     formData.append("genre", projectData.genre);
+    formData.append("owner", ownerId);
     formData.append("starting_content", projectData.startingVerseParagraph || "");
-    formData.append("owner", parseInt(projectData.owner)); // Ensure owner is an integer
-    formData.append("is_open", projectData.is_open ?? true);
-    formData.append("is_active", projectData.is_active ?? true);
+    formData.append("is_open", true);
 
     if (projectData.image) {
         formData.append("image", projectData.image);
     }
 
-    // Debug log
-    console.log("FormData entries:", [...formData.entries()]);
-
     const response = await fetch(url, {
         method: "POST",
         headers: {
-            ...(token && {
-                Authorization: token.startsWith("Token") ? token : `Token ${token}`,
-            }),
+            Authorization: `Token ${authToken}`,
         },
         body: formData,
     });
 
-    // Log for debugging during development
-    console.log("API Response status:", response.status);
-    console.log("API Response ok:", response.ok);
-
-    // Error handling
     if (!response.ok) {
         const fallbackError = `HTTP ${response.status}: Error creating project`;
 

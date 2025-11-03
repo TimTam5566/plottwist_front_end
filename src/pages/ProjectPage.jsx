@@ -1,8 +1,9 @@
 import { useParams, Link } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import PledgeForm from "../components/PledgeForm";
 import { useAuth } from "../hooks/use-auth";
 import { API_URL } from "../config";
+import { useProjectProgress } from "../hooks/use-project-progress";
 import "./ProjectPage.css";
 
 function ProjectPage() {
@@ -12,6 +13,19 @@ function ProjectPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const { calculateProgress, getContentLabel } = useProjectProgress();
+
+    const getImageUrl = (image) => {
+        if (!image) return "/images/default.jpg";
+        if (image.startsWith('/media/')) {
+            return `${API_URL}${image}`;
+        }
+        if (image.startsWith('http')) {
+            return image.replace('/media/https://', 'https://');
+        }
+        return "/images/default.jpg";
+    };
+
     // Debug logs with more info
     console.log("Current auth state:", {
         token: auth?.token,
@@ -20,16 +34,36 @@ function ProjectPage() {
         localStorage_user_id: window.localStorage.getItem("user_id")
     });
 
-    const isProjectOwner = () => {
+    const isProjectOwner = useCallback(() => {
         const userId = window.localStorage.getItem("user_id");
-        console.log("Checking ownership:", {
-            storedUserId: userId,
-            authUserId: auth?.user_id,
-            projectOwner: project?.owner,
-            isOwner: parseInt(userId) === project?.owner
-        });
         return parseInt(userId) === project?.owner;
-    };
+    }, [project?.owner]);
+
+    const imageUrl = useMemo(() => 
+        project?.image ? getImageUrl(project.image) : "/images/default.jpg"
+    , [project?.image]);
+
+    const handlePledgeSuccess = useCallback(() => {
+        if (auth?.token) {
+            const headers = {
+                "Authorization": `Token ${auth.token}`
+            };
+
+            fetch(`${import.meta.env.VITE_API_URL}/projects/${id}/`, { headers })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`Error refreshing project: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    setProject(data);
+                })
+                .catch(err => {
+                    console.error("Error refreshing project after pledge:", err);
+                });
+        }
+    }, [auth?.token, id]);
 
     useEffect(() => {
         setLoading(true);
@@ -59,30 +93,14 @@ function ProjectPage() {
             .finally(() => setLoading(false));
     }, [id, auth?.token]);
 
-    const getContentLabel = (contentType) => {
-        return contentType === 'poem' ? 'Verses' : 'Paragraphs';
-    };
-
-    const calculateProgress = (currentContent) => {
-        if (!currentContent) return 0;
-        const segments = project.content_type === 'poem' 
-            ? currentContent.split('\n').filter(line => line.trim().length > 0)
-            : currentContent.split(/\n\n+/).filter(para => para.trim().length > 0);
+    const calculatePledgeProgress = () => {
+        if (!project?.pledges || !project?.goal) return 0;
         
-        const count = segments.length;
-        const percentage = (count / project.goal) * 100;
-        return Math.min(percentage, 100);
-    };
-
-    const getImageUrl = (image) => {
-        if (!image) return "/images/default.jpg";
-        if (image.startsWith('/media/')) {
-            return `${API_URL}${image}`;
-        }
-        if (image.startsWith('http')) {
-            return image.replace('/media/https://', 'https://');
-        }
-        return "/images/default.jpg";
+        const totalPledges = project.pledges.reduce((sum, pledge) => 
+            sum + (Number(pledge.amount) || 0), 0
+        );
+        
+        return Math.min((totalPledges / project.goal) * 100, 100);
     };
 
     return (
@@ -101,11 +119,10 @@ function ProjectPage() {
                         )}
                     </div>
                     <img
-                        src={getImageUrl(project.image)}
-                        alt={project.title}
+                        src={imageUrl}
+                        alt={project?.title}
                         className="project-image"
                         onError={(e) => {
-                            console.error(`Like a ghost in a gothic novel, the image flickered… and disappeared. Try again, if you dare ${project.id}:`, project.image);
                             e.target.src = "/images/default.jpg";
                         }}
                     />
@@ -122,25 +139,22 @@ function ProjectPage() {
                         <div className="progress-bar">
                             <div 
                                 className="progress-fill"
-                                style={{ width: `${calculateProgress(project.current_content)}%` }}
+                                style={{ width: `${calculatePledgeProgress()}%` }}
                             />
                         </div>
                         <p className="progress-text">
-                            {getContentLabel(project.content_type)}: 
-                            {' '}
-                            {project.current_content
-                                ? project.content_type === 'poem'
-                                    ? project.current_content.split('\n').filter(line => line.trim().length > 0).length
-                                    : project.current_content.split(/\n\n+/).filter(para => para.trim().length > 0).length
-                                : 0
-                            }
-                            {' '}/ {project.goal}
+                            Progress: {project.pledges?.length || 0} pledges
+                            ({Math.round(calculatePledgeProgress())}% of goal)
                         </p>
                     </div>
 
                     <p><strong>Open for contributions:</strong> {project.is_open ? "Yes" : "No"}</p>
                     <p><strong>Date Created:</strong> {new Date(project.date_created).toLocaleString()}</p>
-                    <PledgeForm projectId={project.id} />
+                    <PledgeForm 
+                        projectId={project?.id} 
+                        project={project}
+                        onSuccess={handlePledgeSuccess}
+                    />
                 </>
             )}
         </div>

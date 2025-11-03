@@ -34,3 +34,89 @@ textarea {
     width: 100%;
     resize: vertical;
 }
+
+/* Add to existing CSS */
+.pledge-prompt {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(106, 90, 205, 0.1);
+    border-radius: 8px;
+    
+    @media (max-width: 768px) {
+        padding: 10px;
+        margin: 15px 0;
+    }
+}
+
+.prompt-content {
+    font-size: clamp(1rem, 2vw, 1.1rem);
+    line-height: 1.5;
+}
+
+.prompt-section {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 0.25rem;
+}
+
+.prompt-display {
+    min-height: 80px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: white;
+    border-left: 4px solid #6a5acd;
+    border-radius: 0.25rem;
+}
+
+.prompt-placeholder {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.prompt-text {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.pledge-comment {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 60px;
+}
+
+.pledge-comment:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #495057;
+    font-weight: 500;
+}
+
+/* Media queries at the end */
+@media (max-width: 768px) {
+    .prompt-section {
+        padding: 0.75rem;
+    }
+    
+    .prompt-display {
+        padding: 0.75rem;
+    }
+}
+
