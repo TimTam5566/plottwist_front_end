@@ -24,7 +24,7 @@ Project Requirements
     -   Owner (a user)
     -   Description (done)
     -   Image (done)
-    -   Target amount to raise 
+    -   Target amount to raise (done)
     -   Whether it is currently open to accepting new supporters or not (done)
     -   When the fundraiser was created (done)
  
@@ -37,7 +37,7 @@ Project Requirements
  
  Implement suitable update/delete functionality, e.g. should a fundraiser owner be allowed to update its description?
   
- Implement suitable permissions, e.g. who is allowed to delete a pledge?
+ Implement suitable permissions, e.g. who is allowed to delete a pledge? 
 
  Return the relevant status codes for both successful and unsuccessful requests to the API.
 

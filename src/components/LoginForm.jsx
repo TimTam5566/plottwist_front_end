@@ -38,16 +38,17 @@ function LoginForm() {
                 handleLogin(data.token, data.user_id);
                 navigate("/");
             } else {
-                setError(data.detail);
+                // Use your custom error message for invalid credentials
+                setError("We knocked, but the castle gates stayed shut. Check your spellbook (or your password).");
             }
         } catch (err) {
-            setError("Something went wrong. Please try again later.");
+            setError("A mysterious force blocked our path. Please try again later.");
         }
     };
 
     return (
         <form onSubmit={handleSubmit}>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {error && <div className="error-message">{error}</div>}
             
             <div>
                 <label htmlFor="username">Username:</label>

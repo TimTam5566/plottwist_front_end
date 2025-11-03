@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useCreateProject from "../hooks/use-create-project";
-import putProject from "../api/put-project";
+import postProject from "../api/post-project";
 import "./ProjectForm.css";
+import { useAuth } from "../hooks/use-auth";
 
 
 function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData }) {
+    const { auth } = useAuth();
+    const navigate = useNavigate();
+    const [error, setError] = useState("");
     const [validationErrors, setValidationErrors] = useState({});
     const [formData, setFormData] = useState(initialData || {
         title: "",
@@ -21,22 +25,47 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
     
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(initialData?.image || null);
-    const { createProject, isLoading, error } = useCreateProject();
-    const navigate = useNavigate();
+    const { createProject, isLoading, error: apiError } = useCreateProject();
 
-    const validateForm = () => {
-        const newErrors = {};
-        if (!formData.title.trim()) newErrors.title = "Title is required.";
-        if (!formData.description.trim()) newErrors.description = "Description is required.";
-        if (!formData.genre) newErrors.genre = "Genre is required.";
-        if (!formData.content_type) newErrors.content_type = "Content type is required.";
-        if (!formData.starting_content.trim()) newErrors.starting_content = "Starting content is required.";
-        if (!formData.goal) newErrors.goal = "Verse or Paragraph amount is required.";
-        else if (Number(formData.goal) <= 0) newErrors.goal = "Goal must be positive.";
-        // Removed image URL validation since we're using file upload
+    const validateForm = (data) => {
+        const errors = {};
+        
+        if (!data.title?.trim()) {
+            errors.title = "Every story needs a title to begin its journey!";
+        }
+        
+        if (!data.description?.trim()) {
+            errors.description = "Paint us a picture with your description...";
+        }
+        
+        if (!data.goal) {
+            errors.goal = "Every journey needs a destination - how many verses or paragraphs await?";
+        } else if (Number(data.goal) <= 0) {
+            errors.goal = "The path ahead needs at least one step!";
+        } else {
+            // Calculate current progress
+            const contentSegments = data.content_type === 'poem'
+                ? data.current_content?.split('\n').filter(line => line.trim().length > 0).length || 0
+                : data.current_content?.split(/\n\n+/).filter(para => para.trim().length > 0).length || 0;
+                
+            if (contentSegments > Number(data.goal)) {
+                errors.goal = `Your tale has grown beyond its bounds! Current ${data.content_type === 'poem' ? 'verses' : 'paragraphs'}: ${contentSegments}`;
+            }
+        }
+        
+        if (!data.genre?.trim()) {
+            errors.genre = "In which realm does your tale unfold?";
+        }
+        
+        if (!data.content_type) {
+            errors.content_type = "Will your story flow in prose or dance in verse?";
+        }
+        
+        if (!data.starting_content?.trim()) {
+            errors.starting_content = "Every adventure needs its first step - add your opening words!";
+        }
 
-        setValidationErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return errors;
     };
 
     const handleChange = (e) => {
@@ -66,42 +95,49 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) return;
-
-        // Use FormData for file upload
-        const formDataToSend = new FormData();
-        
-        // Append all form fields
-        Object.keys(formData).forEach(key => {
-            if (key !== 'image') { // Skip image field as we'll handle it separately
-                formDataToSend.append(key, formData[key]);
-            }
-        });
-
-        // Append the image file if one is selected
-        if (imageFile) {
-            formDataToSend.append('image', imageFile);
-        }
 
         try {
-            if (isEditMode) {
-                await putProject(projectId, formDataToSend);
-            } else {
-                await createProject(formDataToSend);
-            }
+            const userId = parseInt(localStorage.getItem("userId"));
+            const formDataToSend = new FormData();
             
-            if (onSuccess) onSuccess();
+            // Append all form fields except image
+            Object.keys(formData).forEach(key => {
+                if (key !== 'image') {
+                    formDataToSend.append(key, formData[key]);
+                }
+            });
             
-            // Cleanup
-            if (imagePreview) {
-                URL.revokeObjectURL(imagePreview);
+            // Add owner field
+            formDataToSend.append('owner', userId);
+            
+            // Handle image separately
+            if (imageFile) {
+                formDataToSend.append('image', imageFile);
             }
+
+            // Debug log to verify FormData contents
+            console.log("FormData entries:", [...formDataToSend.entries()]);
+
+            const response = await postProject({
+                title: formData.title,
+                description: formData.description,
+                goal: formData.goal,
+                genre: formData.genre,
+                startingVerseParagraph: formData.starting_content,
+                image: imageFile,
+                owner: userId,
+                content_type: formData.content_type,
+                is_open: formData.is_open,
+                current_content: formData.current_content
+            });
+
+            if (response?.id) {
+                navigate(`/project/${response.id}`);
+            }
+
         } catch (err) {
-            console.error("Error:", err);
-            setValidationErrors(prev => ({
-                ...prev,
-                api: err.message || "Failed to save project"
-            }));
+            setError("The magical quill seems to have run dry. Check your enchantments and try again!");
+            console.error("Form submission error:", err);
         }
     };
 
@@ -120,54 +156,85 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
         ));
     };
 
+    const calculateProgress = (content, contentType, goal) => {
+        if (!content || !goal) return 0;
+        const segments = contentType === 'poem' 
+            ? content.split('\n').filter(line => line.trim().length > 0)
+            : content.split(/\n\n+/).filter(para => para.trim().length > 0);
+        
+        const count = segments.length;
+        const percentage = (count / goal) * 100;
+        return Math.min(percentage, 100);
+    };
+
     return (
         <form onSubmit={handleSubmit} className="project-form" encType="multipart/form-data">
             <h2>Create a Project</h2>
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {(apiError || error) && (
+                <div className="error-message api-error">
+                    <p>{"Alas! The magical quill has run dry. Our story stumbled on its way to the library. Perhaps Mercury is in retrograde, or the muse is taking a coffee break. Let's try that again, shall we?"}</p>
+                </div>
+            )}
 
-            <label htmlFor="title">Title *</label>
-            <input id="title" value={formData.title} onChange={handleChange} />
-            {validationErrors.title && <p style={{ color: "red" }}>{validationErrors.title}</p>}
+            <div className="form-field">
+                <label htmlFor="title">Title *</label>
+                <input
+                    type="text"
+                    id="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    className={validationErrors.title ? 'has-error' : ''}
+                />
+                {validationErrors.title && (
+                    <span className="error-text">{validationErrors.title}</span>
+                )}
+            </div>
 
-            <label htmlFor="description">Description *</label>
-            <textarea id="description" value={formData.description} onChange={handleChange} />
-            {validationErrors.description && <p style={{ color: "red" }}>{validationErrors.description}</p>}
+            <div className="form-field">
+                <label htmlFor="description">Description *</label>
+                <textarea id="description" value={formData.description} onChange={handleChange} />
+                {validationErrors.description && <p style={{ color: "red" }}>{validationErrors.description}</p>}
+            </div>
 
-            <label htmlFor="genre">Genre *</label>
-            <select
-                id="genre"
-                name="genre"
-                value={formData.genre}
-                onChange={handleChange}
-                aria-label="Select project genre"
-                required
-            >
-                <option value="">Select a genre</option>
-                <option value="Thriller">Thriller</option>
-                <option value="Romance">Romance</option>
-                <option value="Modern Drama">Modern Drama</option>
-                <option value="Historical">Historical</option>
-                <option value="Comedy">Comedy</option>
-                <option value="Childrens Fiction">Children's Fiction</option>
-                <option value="Fantasy/Mythology">Fantasy/Mythology</option>
-            </select>
-            {validationErrors.genre && <p style={{ color: "red" }}>{validationErrors.genre}</p>}
+            <div className="form-field">
+                <label htmlFor="genre">Genre *</label>
+                <select
+                    id="genre"
+                    name="genre"
+                    value={formData.genre}
+                    onChange={handleChange}
+                    aria-label="Select project genre"
+                    required
+                >
+                    <option value="">Select a genre</option>
+                    <option value="Thriller">Thriller</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Modern Drama">Modern Drama</option>
+                    <option value="Historical">Historical</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Childrens Fiction">Children's Fiction</option>
+                    <option value="Fantasy/Mythology">Fantasy/Mythology</option>
+                </select>
+                {validationErrors.genre && <p style={{ color: "red" }}>{validationErrors.genre}</p>}
+            </div>
 
-            <label htmlFor="content_type">Content Type *</label>
-            <select
-                id="content_type"
-                name="content_type"
-                value={formData.content_type}
-                onChange={handleChange}
-                aria-label="Select content type"
-                required
-            >
-                <option value="">Select type</option>
-                <option value="poem">Poem</option>
-                <option value="story">Story</option>
-            </select>
-            {validationErrors.content_type && <p style={{ color: "red" }}>{validationErrors.content_type}</p>}
+            <div className="form-field">
+                <label htmlFor="content_type">Content Type *</label>
+                <select
+                    id="content_type"
+                    name="content_type"
+                    value={formData.content_type}
+                    onChange={handleChange}
+                    aria-label="Select content type"
+                    required
+                >
+                    <option value="">Select type</option>
+                    <option value="poem">Poem</option>
+                    <option value="story">Story</option>
+                </select>
+                {validationErrors.content_type && <p style={{ color: "red" }}>{validationErrors.content_type}</p>}
+            </div>
 
             <div className="form-group">
                 <label htmlFor="starting_content">Starting Content *</label>
@@ -198,14 +265,46 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
                 </div>
             )}
 
-            <label htmlFor="goal">Verse or Paragraph Amount *</label>
-            <input 
-                id="goal" 
-                type="number" 
-                value={formData.goal} 
-                onChange={handleChange} 
-            />
-            {validationErrors.goal && <p style={{ color: "red" }}>{validationErrors.goal}</p>}
+            <div className="form-field">
+                <label htmlFor="goal">Verse or Paragraph Amount *</label>
+                <input
+                    type="number"
+                    id="goal"
+                    value={formData.goal}
+                    onChange={handleChange}
+                    min="1"
+                    className={validationErrors.goal ? 'has-error' : ''}
+                />
+                {validationErrors.goal && (
+                    <span className="error-text">{validationErrors.goal}</span>
+                )}
+                
+                {formData.goal > 0 && (
+                    <div className="progress-section">
+                        <div className="progress-bar">
+                            <div 
+                                className="progress-fill"
+                                style={{ width: `${calculateProgress(
+                                    formData.current_content, 
+                                    formData.content_type, 
+                                    formData.goal
+                                )}%` }}
+                            />
+                        </div>
+                        <p className="progress-text">
+                            {formData.content_type === 'poem' ? 'Verses' : 'Paragraphs'}: 
+                            {' '}
+                            {formData.current_content
+                                ? formData.content_type === 'poem'
+                                    ? formData.current_content.split('\n').filter(line => line.trim().length > 0).length
+                                    : formData.current_content.split(/\n\n+/).filter(para => para.trim().length > 0).length
+                                : 0
+                            }
+                            {' '}/ {formData.goal}
+                        </p>
+                    </div>
+                )}
+            </div>
 
             <div className="form-group">
                 <label htmlFor="image">Project Image</label>
