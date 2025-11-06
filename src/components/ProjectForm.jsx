@@ -8,6 +8,7 @@ import { useProject } from "../hooks/use-project"; // Updated import
 
 
 function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData }) {
+    const { project, setProject } = useProject(projectId);
     // Update existing debug log to include more detail
     console.log('ProjectForm mounted:', { 
         projectId, 
@@ -44,7 +45,7 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(initialData?.image || null);
     const { createProject, isLoading } = useCreateProject();
-    const { project } = useProject(projectId);
+    
 
     const validateForm = (data) => {
         const errors = {};

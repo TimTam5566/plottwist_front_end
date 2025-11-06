@@ -33,19 +33,19 @@ Project Requirements
     -   The fundraiser the pledge is for (done)
     -   The supporter/user (i.e. who created the pledge) (done)
     -   Whether the pledge is anonymous or not (done)
-    -   A comment to go along with the pledge
+    -   A comment to go along with the pledge (done)
  
- Implement suitable update/delete functionality, e.g. should a fundraiser owner be allowed to update its description?
-  
- Implement suitable permissions, e.g. who is allowed to delete a pledge? 
+ Implement suitable update/delete functionality, e.g. should a fundraiser owner be allowed to update its description?(done)
+ 
+ Implement suitable permissions, e.g. who is allowed to delete a pledge?  (done)
 
- Return the relevant status codes for both successful and unsuccessful requests to the API.
+ Return the relevant status codes for both successful and unsuccessful requests to the API. CHECK
 
- Handle failed requests gracefully (e.g. you should have a custom 404 page rather than the default error page).
+ Handle failed requests gracefully (e.g. you should have a custom 404 page rather than the default error page). CHECK
 
- Use Token Authentication, including an endpoint to obtain a token along with the current user's details.
+ Use Token Authentication, including an endpoint to obtain a token along with the current user's details. (done)
 
- Implement responsive design.
+ Implement responsive design. (CHECK)
 
 Additional Notes
 No additional libraries or frameworks, other than what we use in class, are allowed unless approved by the Lead Mentor.
@@ -60,7 +60,11 @@ Please include the following in your readme doc:
  A link to the deployed project.
  
     -   A screenshot of the homepage
+         public/images/home_page.jpg
     -   A screenshot of the fundraiser creation page
+         public/images/create_projects_page.png
     -   A screenshot of the fundraiser creation form
+         public/images/create_projects_page.png
     -   A screenshot of a fundraiser with pledges
-    -   A screenshot of the resulting page when an unauthorized user attempts to edit a fundraiser     (optional, depending on whether or not this functionality makes sense in your app!)
+         public/images/project_with _pledges.png
+    -   A screenshot of the resulting page when an unauthorized user attempts to edit a fundraiser     (optional, depending on whether or not this functionality makes sense in your app!) The edit (button) feature only appears when the authorised user is logged in. 
