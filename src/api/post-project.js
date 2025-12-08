@@ -1,3 +1,21 @@
+/**
+ * post-project.js
+ * 
+ * This file provides an async function to create a new project (fundraiser) via the backend API.
+ * 
+ * Function:
+ * - `postProject(projectData, authToken, userId)`:
+ *    - Sends a POST request to the `/projects/` endpoint with the provided project details.
+ *    - Uses FormData to handle both text fields and image uploads.
+ *    - Requires authentication (`authToken`) and a valid user ID (`userId`).
+ *    - Handles errors by parsing the server response and throwing a detailed error message if the request fails.
+ *    - Returns the parsed JSON response containing the created project data on success.
+ * 
+ * Linked to:
+ * - Used by project creation forms/components (e.g., `ProjectForm.jsx`).
+ * - Allows authenticated users to create new projects from the frontend.
+ * - Ensures proper error handling and feedback for project creation.
+ */
 import { useAuth } from "../hooks/use-auth";
 
 async function postProject(projectData, authToken, userId) {

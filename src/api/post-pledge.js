@@ -1,3 +1,22 @@
+/**
+ * post-pledge.js
+ * 
+ * This file provides an async function to submit a pledge to the backend API.
+ * 
+ * Function:
+ * - `postPledge(projectId, pledgeData)`:
+ *    - Sends a POST request to the `/projects/{projectId}/pledges/` endpoint with pledge details.
+ *    - Includes authentication using a token from localStorage.
+ *    - Formats the pledge data (amount, add_content, comment, anonymous) as required by the backend.
+ *    - Handles errors by parsing the response and throwing a detailed error message if the request fails.
+ *    - Returns the parsed JSON response containing the pledge data on success.
+ * 
+ * Linked to:
+ * - Used by the `use-create-pledge` hook and `PledgeForm.jsx` component.
+ * - Allows users to submit pledges to a specific project from the frontend.
+ * - Ensures proper error handling and feedback for pledge submissions.
+ */
+
 const ERROR_MESSAGES = {
     PROJECT_REQUIRED: "Project ID is required",
     AUTH_REQUIRED: "Authentication required",

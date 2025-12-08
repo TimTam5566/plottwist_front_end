@@ -1,3 +1,18 @@
+/**
+ * AboutPageInfo.css
+ * 
+ * This file contains the CSS styles for the About page content in your React app.
+ * 
+ * Function:
+ * - Styles the layout, typography, and colors for the About page sections, headings, paragraphs, lists, and quotes.
+ * - Uses custom CSS variables (e.g., --text, --purple, --muted) for consistent theming.
+ * - Provides responsive design adjustments for smaller screens (max-width: 768px).
+ * 
+ * Linked to:
+ * - Used by the About page React component (e.g., AboutPageInfo.jsx or AboutPage.jsx).
+ * - Ensures the About page is visually appealing and readable on all devices.
+ * - Applies styles to elements with classes like `.about-content`, `.about-intro`, `.tagline`, `.welcome`, `.footer-quote`, and section headings/lists.
+ */
 .about-content {
     max-width: 800px;
     margin: 0 auto;

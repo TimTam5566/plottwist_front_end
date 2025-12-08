@@ -1,4 +1,19 @@
-/* Styles specific to the login form component */
+
+/**
+ * LoginForm.css
+ * 
+ * This file contains CSS styles specific to the login form component in your app.
+ * 
+ * Function:
+ * - Styles the layout, spacing, and appearance of the login form fields, labels, and buttons.
+ * - Provides visual feedback for focused input fields and error messages.
+ * - Defines styles for primary and ghost buttons, error states, and responsive form elements.
+ * 
+ * Linked to:
+ * - Used by the LoginForm React component (e.g., LoginForm.jsx).
+ * - Ensures the login form is visually appealing, user-friendly, and consistent with the app's design.
+ * - Applies styles to elements with classes like `.form-field`, `.btn`, `.btn--primary`, `.btn--ghost`, `.form-error`, and `.error-message`.
+ */
 .form-field {
 	display: flex;
 	flex-direction: column;

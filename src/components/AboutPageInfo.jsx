@@ -1,3 +1,18 @@
+/**
+ * AboutPageInfo.jsx
+ * 
+ * This file defines the AboutPageInfo React component, which displays information about the Plot Twist app.
+ * 
+ * Function:
+ * - Renders a styled About page with sections describing the app's purpose, how it works, its unique features, and its community.
+ * - Uses semantic HTML elements (sections, headings, lists, paragraphs) for clear structure and accessibility.
+ * - Imports and applies styles from AboutPageInfo.css for layout and design.
+ * 
+ * Linked to:
+ * - Used as the About page in your app, typically rendered via a route (e.g., `/about`) or included in a main layout.
+ * - Relies on AboutPageInfo.css for its visual styling.
+ * - Helps users understand the concept, goals, and collaborative nature of Plot Twist.
+ */
 import React from 'react';
 import './AboutPageInfo.css';
 
