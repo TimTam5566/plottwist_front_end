@@ -1,52 +1,232 @@
-/* Simple signup form styles, similar to LoginForm.css */
+/**
+ * SignupForm.css - Literary Theme
+ * 
+ * A bookish, elegant design for the signup form
+ * Colors: Burgundy, gold, cream, forest green
+ * Font: Playfair Display (serif)
+ */
 
+/* Import elegant serif font */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap');
+
+/* Signup form container */
+.signup-form {
+    max-width: 480px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+    background: linear-gradient(145deg, #fefdfb 0%, #f9f6f0 100%);
+    border: 2px solid #8B4513;
+    border-radius: 4px;
+    box-shadow: 
+        0 4px 20px rgba(139, 69, 19, 0.15),
+        inset 0 0 60px rgba(139, 69, 19, 0.03);
+    position: relative;
+}
+
+/* Decorative corner flourishes */
+.signup-form::before,
+.signup-form::after {
+    content: "❧";
+    position: absolute;
+    font-size: 1.5rem;
+    color: #8B4513;
+    opacity: 0.5;
+}
+
+.signup-form::before {
+    top: 12px;
+    left: 18px;
+}
+
+.signup-form::after {
+    bottom: 12px;
+    right: 18px;
+    transform: rotate(180deg);
+}
+
+/* Main heading */
+.signup-form h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #5D2E1F;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+}
+
+/* Subheading / lead text */
+.signup-form .lead,
+.signup-form p {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1rem;
+    color: #8B7355;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 2rem;
+}
+
+/* Form fields */
 .signup-form .form-field {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    margin-bottom: 0.9rem;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .signup-form .form-field label {
-    font-size: 0.85rem;
-    color: #64748b;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #5D2E1F;
+    letter-spacing: 0.3px;
 }
 
 .signup-form .form-field input {
-    padding: 0.65rem 0.75rem;
-    border-radius: 8px;
-    border: 1px solid #e6e9ef;
-    background: #ffffff;
-    color: #0b1220;
-    font-size: 0.95rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid #D4C4B0;
+    border-radius: 4px;
+    background: #FFFEF9;
+    color: #3D2914;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
 }
 
+.signup-form .form-field input:focus {
+    outline: none;
+    border-color: #8B4513;
+    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12);
+    background: #FFFFFF;
+}
+
+.signup-form .form-field input::placeholder {
+    color: #B8A88A;
+    font-style: italic;
+}
+
+/* Form actions / buttons container */
 .signup-form .form-actions {
     display: flex;
-    gap: 0.5rem;
+    flex-direction: column;
+    gap: 0.75rem;
     align-items: center;
-    justify-content: space-between;
-    margin-top: 0.5rem;
+    margin-top: 2rem;
 }
 
+/* Buttons */
 .signup-form .btn {
-    padding: 0.6rem 0.9rem;
-    border-radius: 8px;
+    padding: 0.85rem 1.5rem;
+    border-radius: 4px;
     border: none;
     cursor: pointer;
-    font-weight: 700;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    min-width: 200px;
 }
 
 .signup-form .btn--primary {
-    background: linear-gradient(90deg,#7c3aed,#5b21b6);
-    color: #ffffff;
+    background: linear-gradient(135deg, #8B4513 0%, #5D2E1F 100%);
+    color: #F9F6F0;
+    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.3);
 }
 
+.signup-form .btn--primary:hover {
+    background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
+}
+
+.signup-form .btn--primary:disabled {
+    background: #B8A88A;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.signup-form .btn--ghost {
+    background: transparent;
+    color: #8B4513;
+    border: 1px solid #8B4513;
+}
+
+.signup-form .btn--ghost:hover {
+    background: rgba(139, 69, 19, 0.08);
+    color: #5D2E1F;
+}
+
+/* Error messages */
 .signup-form .form-error {
-    color: #ff4d4f;
-    background: rgba(255, 77, 79, 0.06);
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
+    font-family: 'Lora', Georgia, serif;
+    color: #9B2C2C;
+    background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+    border: 1px solid #E9B8B8;
+    border-left: 4px solid #9B2C2C;
+    padding: 0.85rem 1rem;
+    border-radius: 4px;
     font-size: 0.9rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
+    font-style: italic;
+}
+
+/* Decorative elements */
+.signup-form .chapter-marker {
+    text-align: center;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 0.85rem;
+    color: #8B7355;
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.signup-form .chapter-marker::before,
+.signup-form .chapter-marker::after {
+    content: "—";
+    color: #D4C4B0;
+}
+
+/* Optional: Add a book quote or tagline */
+.signup-form .tagline {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.85rem;
+    color: #8B7355;
+    text-align: center;
+    font-style: italic;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #E6DED3;
+}
+
+.signup-form .tagline::before {
+    content: '"';
+}
+
+.signup-form .tagline::after {
+    content: '"';
+}
+
+/* Responsive adjustments */
+@media (max-width: 520px) {
+    .signup-form {
+        margin: 1.5rem;
+        padding: 1.5rem;
+    }
+    
+    .signup-form h1 {
+        font-size: 1.6rem;
+    }
+    
+    .signup-form .form-actions {
+        flex-direction: column;
+    }
+    
+    .signup-form .btn {
+        width: 100%;
+    }
 }

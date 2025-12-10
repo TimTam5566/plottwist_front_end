@@ -38,7 +38,6 @@ function LoginForm() {
                 handleLogin(data.token, data.user_id);
                 navigate("/");
             } else {
-                // Use your custom error message for invalid credentials
                 setError("We knocked, but the castle gates stayed shut. Check your spellbook (or your password).");
             }
         } catch (err) {
@@ -47,32 +46,44 @@ function LoginForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="login-form" onSubmit={handleSubmit}>
+            <h1>Continue Your Story</h1>
+            <p className="lead">Welcome back, dear author.</p>
+            
             {error && <div className="error-message">{error}</div>}
             
-            <div>
-                <label htmlFor="username">Username:</label>
+            <div className="form-field">
+                <label htmlFor="username">Pen Name</label>
                 <input
                     type="text"
                     id="username"
                     value={formData.username}
                     onChange={handleChange}
+                    placeholder="Your pen name"
                     required
                 />
             </div>
 
-            <div>
-                <label htmlFor="password">Password:</label>
+            <div className="form-field">
+                <label htmlFor="password">Secret Word</label>
                 <input
                     type="password"
                     id="password"
                     value={formData.password}
                     onChange={handleChange}
+                    placeholder="Your secret word"
                     required
                 />
             </div>
 
-            <button type="submit">Login</button>
+            <div className="form-actions">
+                <button type="submit" className="btn btn--primary">Enter the Library</button>
+                <button type="button" className="btn btn--ghost" onClick={() => navigate('/signup')}>
+                    New here? Begin your story
+                </button>
+            </div>
+            
+            <p className="tagline">Every great story deserves a next chapter</p>
         </form>
     );
 }
