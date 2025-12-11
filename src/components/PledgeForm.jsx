@@ -1,8 +1,14 @@
+/**
+ * PledgeForm.jsx - Literary Theme
+ * 
+ * Form for contributing verses/paragraphs to a project
+ */
+
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../hooks/use-auth";
 import useCreatePledge from "../hooks/use-create-pledge";
 import { getWritingPrompt } from "../data/pledgePrompts";
-import postPledge from "../api/post-pledge"; // Add this if not already imported
+import postPledge from "../api/post-pledge";
 import "./PledgeForm.css";
 
 const ERROR_MESSAGES = {
@@ -12,7 +18,6 @@ const ERROR_MESSAGES = {
 };
 
 function PledgeForm({ projectId, project, onSuccess }) {
-    // Update initial debug log with more detail
     console.debug('PledgeForm mounting...', {
         projectId,
         project,
@@ -26,30 +31,27 @@ function PledgeForm({ projectId, project, onSuccess }) {
     const [formData, setFormData] = useState({
         amount: "",
         add_content: "",
-        comment: "",  // Add comment field
+        comment: "",
         anonymous: false,
     });
     const [promptData, setPromptData] = useState(null);
 
     const { createPledge, isLoading, error: submissionError, success } = useCreatePledge();
 
-    // First useEffect - Fix empty dependency array
     useEffect(() => {
         console.debug('PledgeForm props:', { projectId, project });
-    }, [projectId, project]); // Add required dependencies
+    }, [projectId, project]);
 
     const formatContent = (content) => {
-        // Split content by double newlines for paragraphs
         return content.split(/\n\n+/).map((paragraph, index) => (
             <p key={index}>{paragraph.trim()}</p>
         ));
     };
 
-    // Second useEffect - Memoize generateNewPrompt
     const generateNewPrompt = useCallback(() => {
         if (formData.amount > 0) {
             const prompt = getWritingPrompt(
-                null, // No need to pass project since we're not using genre
+                null,
                 Number(formData.amount),
                 "verse"
             );
@@ -66,13 +68,11 @@ function PledgeForm({ projectId, project, onSuccess }) {
             [id]: newValue,
         }));
 
-        // Generate prompt only for new amounts
         if (id === 'amount' && value && Number(value) > 0) {
             generateNewPrompt();
         }
     };
 
-    // Keep existing error state for form validation
     const [validationErrors, setValidationErrors] = useState({});
 
     const handleSubmit = async (e) => {
@@ -112,116 +112,131 @@ function PledgeForm({ projectId, project, onSuccess }) {
         if (project && formData.amount) {
             generateNewPrompt();
         }
-    }, [project, formData.amount, generateNewPrompt]); // Add all required dependencies
+    }, [project, formData.amount, generateNewPrompt]);
 
     return (
-        <form onSubmit={handleSubmit} className="pledge-form">
-            {error && (
-                <div className="error-message" role="alert">
-                    <p>{ERROR_MESSAGES.PLEDGE_FAILED}</p>
+        <div className="pledge-form-wrapper">
+            <form onSubmit={handleSubmit} className="pledge-form">
+                <div className="form-header">
+                    <span className="form-icon">🪶</span>
+                    <h3>Add Your Voice</h3>
+                    <p className="form-subtitle">Contribute to this unfolding tale...</p>
                 </div>
-            )}
-            {success && <p style={{ color: "green" }}>{success}</p>}
 
-            <div>
-                <label htmlFor="amount">How many verses/paragraphs?</label>
-                <input
-                    type="number"
-                    id="amount"
-                    placeholder="Enter number of verses or paragraphs"
-                    value={formData.amount}
-                    onChange={handleChange}
-                    required
-                    min={1}
-                />
-            </div>
+                {error && (
+                    <div className="error-message" role="alert">
+                        <p>{ERROR_MESSAGES.PLEDGE_FAILED}</p>
+                    </div>
+                )}
+                
+                {success && (
+                    <div className="success-message">
+                        <p>✨ Your contribution has been woven into the story!</p>
+                    </div>
+                )}
 
-            {/* Prompt display section */}
-            <div className="prompt-section">
-                <div className="prompt-display">
-                    {console.log('Rendering prompt display:', promptData)}
-                    {promptData ? (
-                        <>
-                            <p className="prompt-text">{promptData.promptText}</p>
-                            <p className="pledge-text">{promptData.pledgeText}</p>
-                        </>
-                    ) : (
-                        <p className="prompt-placeholder">
-                            {formData.amount > 0 
-                                ? "Click 'Generate Writing Prompt' to get started..." 
-                                : "Enter the number of verses/paragraphs to receive a writing prompt..."}
-                        </p>
+                <div className="form-field">
+                    <label htmlFor="amount">How many verses or paragraphs?</label>
+                    <input
+                        type="number"
+                        id="amount"
+                        placeholder="Enter a number..."
+                        value={formData.amount}
+                        onChange={handleChange}
+                        required
+                        min={1}
+                    />
+                </div>
+
+                {/* Prompt display section */}
+                <div className="prompt-section">
+                    <div className="prompt-display">
+                        {promptData ? (
+                            <>
+                                <p className="prompt-text">{promptData.promptText}</p>
+                                <p className="pledge-text">{promptData.pledgeText}</p>
+                            </>
+                        ) : (
+                            <p className="prompt-placeholder">
+                                {formData.amount > 0 
+                                    ? "Click below to receive inspiration from the muse..." 
+                                    : "Enter a number above to unlock a writing prompt..."}
+                            </p>
+                        )}
+                    </div>
+
+                    {formData.amount > 0 && (
+                        <button 
+                            type="button"
+                            onClick={generateNewPrompt}
+                            className="btn btn--generate"
+                        >
+                            🎲 Summon the Muse
+                        </button>
                     )}
                 </div>
 
-                {formData.amount > 0 && (
-                    <button 
-                        type="button"
-                        onClick={generateNewPrompt}
-                        className="generate-prompt-btn"
-                    >
-                        🎲 Generate Writing Prompt
-                    </button>
-                )}
-            </div>
-
-            <div>
-                <label htmlFor="add_content">Your Contribution *</label>
-                <textarea
-                    id="add_content"
-                    placeholder="Add your verse or paragraph here... Press Enter twice for new paragraphs."
-                    value={formData.add_content}
-                    onChange={handleChange}
-                    required
-                    rows="10"
-                    style={{
-                        whiteSpace: "pre-wrap",
-                        minHeight: "150px",
-                        padding: "10px",
-                        lineHeight: "1.5"
-                    }}
-                />
-            </div>
-
-            {/* New comment field */}
-            <div className="form-group">
-                <label htmlFor="comment">Additional Comment (optional)</label>
-                <textarea
-                    id="comment"
-                    placeholder="Add a comment about your contribution..."
-                    value={formData.comment}
-                    onChange={handleChange}
-                    className="pledge-comment"
-                    rows="2"
-                />
-            </div>
-
-            {/* Keep existing preview section */}
-            {formData.add_content && (
-                <div className="content-preview">
-                    <h4>Preview:</h4>
-                    <div className="formatted-content">
-                        {formatContent(formData.add_content)}
-                    </div>
-                </div>
-            )}
-
-            <div>
-                <label htmlFor="anonymous">
-                    <input
-                        type="checkbox"
-                        id="anonymous"
-                        checked={formData.anonymous}
+                <div className="form-field">
+                    <label htmlFor="add_content">Your Contribution <span className="required">*</span></label>
+                    <textarea
+                        id="add_content"
+                        placeholder="Let your words flow... Press Enter twice for new paragraphs."
+                        value={formData.add_content}
                         onChange={handleChange}
+                        required
+                        rows="8"
                     />
-                    Pledge anonymously
-                </label>
-            </div>
+                </div>
 
-            <button type="submit" disabled={isLoading}>
-                {isLoading ? "Submitting..." : "Submit Pledge"}
-            </button>
-        </form>
+                {/* Comment field */}
+                <div className="form-field">
+                    <label htmlFor="comment">A Note to Fellow Authors (optional)</label>
+                    <textarea
+                        id="comment"
+                        placeholder="Share your thoughts about this contribution..."
+                        value={formData.comment}
+                        onChange={handleChange}
+                        rows="2"
+                        className="comment-field"
+                    />
+                </div>
+
+                {/* Preview section */}
+                {formData.add_content && (
+                    <div className="content-preview">
+                        <h4>📖 Preview:</h4>
+                        <div className="formatted-content">
+                            {formatContent(formData.add_content)}
+                        </div>
+                    </div>
+                )}
+
+                <div className="form-field checkbox-field">
+                    <label htmlFor="anonymous" className="checkbox-label">
+                        <input
+                            type="checkbox"
+                            id="anonymous"
+                            checked={formData.anonymous}
+                            onChange={handleChange}
+                        />
+                        <span className="checkbox-text">Contribute as a mysterious stranger</span>
+                    </label>
+                </div>
+
+                <div className="form-actions">
+                    <button type="submit" className="btn btn--primary" disabled={isLoading}>
+                        {isLoading ? (
+                            <>
+                                <span className="spinner">✒</span>
+                                Weaving words...
+                            </>
+                        ) : (
+                            "Submit Your Contribution"
+                        )}
+                    </button>
+                </div>
+            </form>
+        </div>
     );
 }
 
