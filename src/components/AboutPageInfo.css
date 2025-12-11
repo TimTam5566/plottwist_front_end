@@ -1,4 +1,4 @@
-/**
+/*
  * AboutPageInfo.css - Literary Theme
  * 
  * Styled to match the Plot Twist literary theme
@@ -187,7 +187,7 @@
 }
 
 .footer-quote::before {
-content: "\201C";
+    content: "\201C";
     font-family: 'Playfair Display', Georgia, serif;
     font-size: 3rem;
     color: #8B4513;
@@ -289,3 +289,4 @@ content: "\201C";
         font-size: 2rem;
     }
 }
+

@@ -1,16 +1,223 @@
-.contact-form {
-    display: grid;
-    gap: 8px;
-    max-width: 560px;
+/**
+ * ContactPage.css - Literary Theme
+ * 
+ * Styled to match the Plot Twist literary theme
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap');
+
+/* ===========================
+    Page Layout
+   =========================== */
+
+.contact-page {
+    min-height: calc(100vh - 100px);
+    padding: 2rem 0;
 }
 
-.contact-form input,
-.contact-form textarea {
-    padding: 8px 10px;
+.contact-page .page-wrap {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* ===========================
+    Contact Card
+   =========================== */
+
+.contact-card {
+    background: linear-gradient(145deg, #fefdfb 0%, #f9f6f0 100%);
+    border: 2px solid #8B4513;
     border-radius: 8px;
-    border: 1px solid #e6e9ef;
+    box-shadow: 
+        0 4px 20px rgba(139, 69, 19, 0.15),
+        inset 0 0 60px rgba(139, 69, 19, 0.02);
+    overflow: hidden;
+    position: relative;
 }
 
-.contact-form button {
-    width: fit-content;
+/* Decorative corners */
+.contact-card::before,
+.contact-card::after {
+    content: "❧";
+    position: absolute;
+    font-size: 1.5rem;
+    color: #8B4513;
+    opacity: 0.4;
+}
+
+.contact-card::before {
+    top: 15px;
+    left: 20px;
+}
+
+.contact-card::after {
+    bottom: 15px;
+    right: 20px;
+    transform: rotate(180deg);
+}
+
+/* ===========================
+    Header
+   =========================== */
+
+.contact-header {
+    text-align: center;
+    padding: 2.5rem 2rem 2rem;
+    border-bottom: 1px solid #D4C4B0;
+    background: linear-gradient(180deg, rgba(139, 69, 19, 0.05) 0%, transparent 100%);
+}
+
+.contact-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.contact-header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #5D2E1F;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: 1px;
+}
+
+.contact-tagline {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.05rem;
+    color: #8B7355;
+    font-style: italic;
+    margin: 0;
+}
+
+/* ===========================
+    Content
+   =========================== */
+
+.contact-content {
+    padding: 2rem;
+}
+
+.contact-method {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.contact-method h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #5D2E1F;
+    margin: 0 0 0.75rem 0;
+}
+
+.contact-method p {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.95rem;
+    color: #4A3728;
+    line-height: 1.7;
+    margin: 0 0 1rem 0;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.contact-email {
+    display: inline-block;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #8B4513;
+    text-decoration: none;
+    padding: 0.6rem 1.5rem;
+    border: 2px solid #8B4513;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.contact-email:hover {
+    background: linear-gradient(135deg, #8B4513 0%, #5D2E1F 100%);
+    color: #F9F6F0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+/* ===========================
+    Divider
+   =========================== */
+
+.contact-divider {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.contact-divider span {
+    font-size: 1.2rem;
+    color: #D4C4B0;
+}
+
+/* ===========================
+    Footer
+   =========================== */
+
+.contact-footer {
+    text-align: center;
+    padding: 1.5rem 2rem 2rem;
+    border-top: 1px solid #D4C4B0;
+    background: linear-gradient(0deg, rgba(139, 69, 19, 0.03) 0%, transparent 100%);
+}
+
+.contact-footer .muted {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.85rem;
+    color: #8B7355;
+    margin: 0 0 1rem 0;
+}
+
+.contact-quote {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #5D2E1F;
+    margin: 0;
+    padding: 1rem;
+    background: rgba(139, 69, 19, 0.05);
+    border-radius: 4px;
+}
+
+/* ===========================
+    Responsive
+   =========================== */
+
+@media (max-width: 600px) {
+    .contact-page .page-wrap {
+        padding: 0 0.75rem;
+    }
+
+    .contact-header {
+        padding: 2rem 1.5rem 1.5rem;
+    }
+
+    .contact-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .contact-content {
+        padding: 1.5rem;
+    }
+
+    .contact-method h2 {
+        font-size: 1.15rem;
+    }
+
+    .contact-email {
+        font-size: 1rem;
+        padding: 0.5rem 1.25rem;
+    }
+
+    .contact-card::before,
+    .contact-card::after {
+        display: none;
+    }
 }
