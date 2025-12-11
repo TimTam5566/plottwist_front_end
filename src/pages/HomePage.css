@@ -1,28 +1,460 @@
-#project-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
-	align-items: start;
-	padding: 12px 0;
+/**
+ * HomePage.css - Literary Theme
+ * 
+ * Matching the login/signup burgundy, cream, gold palette
+ * with parchment textures and bookish styling
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap');
+
+/* ===========================
+    Page Layout
+   =========================== */
+
+.home-page {
+    min-height: 100vh;
+    background: linear-gradient(145deg, #f9f6f0 0%, #f5efe5 50%, #ebe3d6 100%);
+    position: relative;
+}
+
+/* Subtle parchment texture overlay */
+.home-page::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.02;
+    pointer-events: none;
+    z-index: 0;
 }
 
 .page-wrap {
-	max-width: 1100px;
-	margin: 0 auto;
-	padding: 8px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem;
+    position: relative;
+    z-index: 1;
 }
 
+/* ===========================
+    Section Titles
+   =========================== */
+
+.section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #5D2E1F;
+    text-align: center;
+    margin: 2.5rem 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.flourish-left,
+.flourish-right {
+    color: #8B4513;
+    opacity: 0.5;
+    font-size: 1.2rem;
+}
+
+.flourish-right {
+    transform: scaleX(-1);
+}
+
+/* ===========================
+    Hero / Welcome Section
+   =========================== */
+
+.hero-section {
+    padding-top: 1rem;
+}
+
+/* ===========================
+    Featured Project Section
+   =========================== */
+
+.featured-section {
+    margin-bottom: 3rem;
+}
+
+.featured-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    background: linear-gradient(145deg, #fefdfb 0%, #f9f6f0 100%);
+    border: 2px solid #8B4513;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 
+        0 4px 20px rgba(139, 69, 19, 0.15),
+        inset 0 0 60px rgba(139, 69, 19, 0.02);
+}
+
+.featured-card__image-container {
+    position: relative;
+    min-height: 300px;
+    overflow: hidden;
+}
+
+.featured-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.featured-card:hover .featured-card__image {
+    transform: scale(1.03);
+}
+
+.featured-card__content {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.featured-card__title-link {
+    text-decoration: none;
+}
+
+.featured-card__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #5D2E1F;
+    margin-bottom: 1rem;
+    transition: color 0.2s ease;
+}
+
+.featured-card__title-link:hover .featured-card__title {
+    color: #8B4513;
+}
+
+.featured-card__description {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #4A3728;
+    margin-bottom: 1.5rem;
+}
+
+.featured-card__meta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.meta-tag {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.8rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-style: italic;
+}
+
+.genre-tag {
+    background: rgba(139, 69, 19, 0.1);
+    color: #8B4513;
+    border: 1px solid rgba(139, 69, 19, 0.3);
+}
+
+.type-tag {
+    background: rgba(93, 46, 31, 0.1);
+    color: #5D2E1F;
+    border: 1px solid rgba(93, 46, 31, 0.3);
+}
+
+.featured-card__btn {
+    align-self: flex-start;
+}
+
+/* ===========================
+    Projects Grid Section
+   =========================== */
+
+.projects-section {
+    margin-bottom: 3rem;
+}
+
+.project-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 0.5rem 0;
+}
+
+/* Style the ProjectCard components to match theme */
 .project-card {
-    border: 2px solid #ccc;      /* Light gray border */
-    border-radius: 8px;          /* Rounded corners */
-    padding: 16px;               /* Space inside the card */
-    background: #fff;            /* White background */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04); /* Optional subtle shadow */
-    transition: box-shadow 0.2s;
+    background: linear-gradient(145deg, #fefdfb 0%, #f9f6f0 100%);
+    border: 2px solid #D4C4B0;
+    border-radius: 8px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 10px rgba(139, 69, 19, 0.08);
+    transition: all 0.3s ease;
 }
 
 .project-card:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.10); /* Slightly stronger shadow on hover */
-    border-color: #888;                      /* Darker border on hover */
+    border-color: #8B4513;
+    box-shadow: 0 4px 20px rgba(139, 69, 19, 0.15);
+    transform: translateY(-3px);
 }
+
+.project-card h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #5D2E1F;
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+}
+
+.project-card h3 a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.project-card h3 a:hover {
+    color: #8B4513;
+}
+
+.project-card .project-description {
+    font-family: 'Lora', Georgia, serif;
+    color: #4A3728;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.project-card .project-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+}
+
+.project-card .project-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.75rem;
+}
+
+.project-card .project-meta span {
+    background: rgba(139, 69, 19, 0.08);
+    color: #8B7355;
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+}
+
+/* ===========================
+    Empty State
+   =========================== */
+
+.empty-section {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-message {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.empty-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.5rem;
+    color: #5D2E1F;
+    margin-bottom: 0.5rem;
+}
+
+.empty-subtitle {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1rem;
+    color: #8B7355;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+}
+
+/* ===========================
+    CTA Section
+   =========================== */
+
+.cta-section {
+    padding: 3rem 0;
+    margin-top: 2rem;
+    border-top: 1px solid #D4C4B0;
+}
+
+.cta-content {
+    text-align: center;
+}
+
+.cta-text {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.3rem;
+    color: #5D2E1F;
+    margin-bottom: 1.25rem;
+}
+
+/* ===========================
+    Buttons (matching login/signup theme)
+   =========================== */
+
+.btn {
+    display: inline-block;
+    padding: 0.85rem 1.5rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn--primary {
+    background: linear-gradient(135deg, #8B4513 0%, #5D2E1F 100%);
+    color: #F9F6F0;
+    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.3);
+}
+
+.btn--primary:hover {
+    background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
+    color: #F9F6F0;
+}
+
+.edit-button {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.8rem;
+    color: #8B4513;
+    text-decoration: none;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid #8B4513;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+    display: inline-block;
+    transition: all 0.2s ease;
+}
+
+.edit-button:hover {
+    background: rgba(139, 69, 19, 0.1);
+}
+
+/* ===========================
+    Loading State
+   =========================== */
+
+.loading-message {
+    text-align: center;
+    padding: 3rem;
+}
+
+.loading-message .muted {
+    font-family: 'Lora', Georgia, serif;
+    font-style: italic;
+    color: #8B7355;
+    margin-bottom: 1rem;
+}
+
+.loading-quill {
+    font-size: 2rem;
+    animation: quill-write 1s ease-in-out infinite;
+}
+
+@keyframes quill-write {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+}
+
+/* ===========================
+    Error State
+   =========================== */
+
+.error-container {
+    text-align: center;
+    padding: 2rem;
+    max-width: 500px;
+    margin: 0 auto;
+    background: linear-gradient(145deg, #fefdfb 0%, #f9f6f0 100%);
+    border: 2px solid #D4C4B0;
+    border-radius: 8px;
+}
+
+.error-message-literary {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.2rem;
+    color: #5D2E1F;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+}
+
+.error-container .muted {
+    font-family: 'Lora', Georgia, serif;
+    color: #8B7355;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ===========================
+    Responsive Design
+   =========================== */
+
+@media (max-width: 768px) {
+    .featured-card {
+        grid-template-columns: 1fr;
+    }
+    
+    .featured-card__image-container {
+        min-height: 200px;
+    }
+    
+    .featured-card__content {
+        padding: 1.5rem;
+    }
+    
+    .featured-card__title {
+        font-size: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.3rem;
+    }
+    
+    .project-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-wrap {
+        padding: 0.5rem;
+    }
+    
+    .featured-card__content {
+        padding: 1rem;
+    }
+    
+    .cta-text {
+        font-size: 1.1rem;
+    }
+    
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
 

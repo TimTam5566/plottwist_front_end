@@ -1,0 +1,189 @@
+/**
+ * WelcomeScroll.css
+ * Parchment scroll styling with literary theme
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap');
+
+.scroll-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.scroll {
+    position: relative;
+    max-width: 500px;
+    width: 100%;
+}
+
+/* Top scroll roll */
+.scroll-top {
+    height: 30px;
+    background: linear-gradient(180deg, 
+        #8B4513 0%, 
+        #A0522D 20%, 
+        #D2B48C 50%,
+        #A0522D 80%, 
+        #8B4513 100%
+    );
+    border-radius: 15px 15px 0 0;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 -5px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 2;
+}
+
+/* Scroll roll end caps */
+.scroll-top::before,
+.scroll-top::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    width: 20px;
+    height: 24px;
+    background: linear-gradient(180deg, 
+        #5D2E1F 0%, 
+        #8B4513 50%, 
+        #5D2E1F 100%
+    );
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.4);
+}
+
+.scroll-top::before {
+    left: -8px;
+}
+
+.scroll-top::after {
+    right: -8px;
+}
+
+/* Main parchment content area */
+.scroll-content {
+    background: linear-gradient(180deg,
+        #F5E6D3 0%,
+        #FDF8F0 10%,
+        #F9F2E7 50%,
+        #F5E6D3 90%,
+        #E8D4BC 100%
+    );
+    padding: 2.5rem 2rem;
+    position: relative;
+    box-shadow: 
+        inset 0 0 30px rgba(139, 69, 19, 0.1),
+        inset 5px 0 15px rgba(139, 69, 19, 0.05),
+        inset -5px 0 15px rgba(139, 69, 19, 0.05);
+    border-left: 2px solid #D4C4B0;
+    border-right: 2px solid #D4C4B0;
+}
+
+/* Parchment texture overlay */
+.scroll-content::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+/* Bottom scroll roll */
+.scroll-bottom {
+    height: 30px;
+    background: linear-gradient(180deg, 
+        #8B4513 0%, 
+        #A0522D 20%, 
+        #D2B48C 50%,
+        #A0522D 80%, 
+        #8B4513 100%
+    );
+    border-radius: 0 0 15px 15px;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 5px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 2;
+}
+
+.scroll-bottom::before,
+.scroll-bottom::after {
+    content: "";
+    position: absolute;
+    bottom: 3px;
+    width: 20px;
+    height: 24px;
+    background: linear-gradient(180deg, 
+        #5D2E1F 0%, 
+        #8B4513 50%, 
+        #5D2E1F 100%
+    );
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.4);
+}
+
+.scroll-bottom::before {
+    left: -8px;
+}
+
+.scroll-bottom::after {
+    right: -8px;
+}
+
+/* Typography */
+.scroll-greeting {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #5D2E1F;
+    text-align: center;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.scroll-message {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #4A3728;
+    text-align: center;
+    margin-bottom: 1.25rem;
+}
+
+.scroll-cta {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #8B4513;
+    text-align: center;
+    margin: 0;
+}
+
+/* Decorative flourish after CTA */
+.scroll-cta::after {
+    content: " ❧";
+    opacity: 0.7;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .scroll-container {
+        padding: 1rem 0.5rem;
+    }
+    
+    .scroll-content {
+        padding: 2rem 1.5rem;
+    }
+    
+    .scroll-greeting {
+        font-size: 1.5rem;
+    }
+    
+    .scroll-message {
+        font-size: 0.95rem;
+    }
+}
