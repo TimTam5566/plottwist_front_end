@@ -187,7 +187,7 @@
 }
 
 .footer-quote::before {
-    content: "\201C";
+    content:"\201C";
     font-family: 'Playfair Display', Georgia, serif;
     font-size: 3rem;
     color: #8B4513;
@@ -289,4 +289,3 @@
         font-size: 2rem;
     }
 }
-

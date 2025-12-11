@@ -1,122 +1,404 @@
-/* Basic pledge form styles */
-.pledge-form .form-field 
-    { 
-    display:flex; 
-    flex-direction:column; 
-    gap:0.35rem; 
-    margin-bottom:0.6rem 
-    }
+/**
+ * PledgeForm.css - Literary Theme
+ * 
+ * Styled to match the Plot Twist literary theme
+ */
 
-.pledge-form input 
-    { 
-    padding:0.5rem; 
-    border-radius:6px; 
-    border:1px solid #e6e9ef}
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap');
 
-    .pledge-form .form-actions { margin-top:0.4rem }
+/* ===========================
+    Form Wrapper
+   =========================== */
 
-    .form-error { color:#ff4d4f; background:rgba(255,77,79,0.06); padding:0.5rem; border-radius:6px }
-
-.content-preview {
-    margin-top: 1rem;
-    padding: 1rem;
-    background-color: #f8f9fa;
-    border-radius: 4px;
+.pledge-form-wrapper {
+    margin: 2rem 0;
 }
 
-.formatted-content p {
-    margin-bottom: 1rem;
-    line-height: 1.5;
-}
+/* ===========================
+    Form Container
+   =========================== */
 
-textarea {
-    font-family: inherit;
-    width: 100%;
-    resize: vertical;
-}
-
-/* Add to existing CSS */
-.pledge-prompt {
-    margin: 20px 0;
-    padding: 15px;
-    background: rgba(106, 90, 205, 0.1);
+.pledge-form {
+    background: linear-gradient(145deg, #fefdfb 0%, #f9f6f0 100%);
+    border: 2px solid #8B4513;
     border-radius: 8px;
-    
-    @media (max-width: 768px) {
-        padding: 10px;
-        margin: 15px 0;
-    }
+    padding: 2rem;
+    box-shadow: 
+        0 4px 20px rgba(139, 69, 19, 0.12),
+        inset 0 0 40px rgba(139, 69, 19, 0.02);
+    position: relative;
 }
 
-.prompt-content {
-    font-size: clamp(1rem, 2vw, 1.1rem);
-    line-height: 1.5;
+/* Decorative corners */
+.pledge-form::before,
+.pledge-form::after {
+    content: "❧";
+    position: absolute;
+    font-size: 1.2rem;
+    color: #8B4513;
+    opacity: 0.35;
 }
 
-.prompt-section {
-    margin: 1rem 0;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 0.25rem;
+.pledge-form::before {
+    top: 10px;
+    left: 15px;
 }
 
-.prompt-display {
-    min-height: 80px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    background: white;
-    border-left: 4px solid #6a5acd;
-    border-radius: 0.25rem;
+.pledge-form::after {
+    bottom: 10px;
+    right: 15px;
+    transform: rotate(180deg);
 }
 
-.prompt-placeholder {
-    color: #6c757d;
+/* ===========================
+    Form Header
+   =========================== */
+
+.pledge-form .form-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #D4C4B0;
+}
+
+.pledge-form .form-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.pledge-form .form-header h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #5D2E1F;
+    margin: 0 0 0.25rem 0;
+}
+
+.pledge-form .form-subtitle {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.9rem;
+    color: #8B7355;
+    font-style: italic;
+    margin: 0;
+}
+
+/* ===========================
+    Form Fields
+   =========================== */
+
+.pledge-form .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.pledge-form label {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #5D2E1F;
+}
+
+.pledge-form .required {
+    color: #9B2C2C;
+}
+
+/* Input Styles */
+.pledge-form input[type="number"] {
+    padding: 0.75rem 1rem;
+    border: 1px solid #D4C4B0;
+    border-radius: 4px;
+    background: #FFFEF9;
+    color: #3D2914;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.pledge-form input[type="number"]:focus {
+    outline: none;
+    border-color: #8B4513;
+    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12);
+}
+
+.pledge-form input::placeholder {
+    color: #B8A88A;
     font-style: italic;
 }
 
-.prompt-text {
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
-    line-height: 1.5;
-}
-
-.pledge-comment {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border: 1px solid #ddd;
+/* Textarea Styles */
+.pledge-form textarea {
+    padding: 0.85rem 1rem;
+    border: 1px solid #D4C4B0;
     border-radius: 4px;
-    background-color: #fff;
-    font-family: inherit;
+    background: #FFFEF9;
+    color: #3D2914;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1rem;
+    line-height: 1.7;
     resize: vertical;
-    min-height: 60px;
+    transition: all 0.3s ease;
+    width: 100%;
+    min-height: 150px;
 }
 
-.pledge-comment:focus {
-    border-color: #007bff;
+.pledge-form textarea.comment-field {
+    min-height: 70px;
+}
+
+.pledge-form textarea:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+    border-color: #8B4513;
+    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12);
 }
 
-.form-group {
+.pledge-form textarea::placeholder {
+    color: #B8A88A;
+    font-style: italic;
+}
+
+/* ===========================
+   Prompt Section
+   =========================== */
+
+.pledge-form .prompt-section {
+    margin: 1.25rem 0;
+    padding: 1.25rem;
+    background: rgba(139, 69, 19, 0.04);
+    border: 1px solid #D4C4B0;
+    border-radius: 4px;
+}
+
+.pledge-form .prompt-display {
+    min-height: 80px;
+    padding: 1rem;
     margin-bottom: 1rem;
+    background: #FFFEF9;
+    border-left: 4px solid #8B4513;
+    border-radius: 0 4px 4px 0;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #495057;
-    font-weight: 500;
+.pledge-form .prompt-placeholder {
+    font-family: 'Lora', Georgia, serif;
+    color: #8B7355;
+    font-style: italic;
+    margin: 0;
 }
 
-/* Media queries at the end */
-@media (max-width: 768px) {
-    .prompt-section {
-        padding: 0.75rem;
+.pledge-form .prompt-text {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1rem;
+    color: #4A3728;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.6;
+}
+
+.pledge-form .pledge-text {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 0.9rem;
+    color: #8B4513;
+    font-style: italic;
+    margin: 0;
+}
+
+/* ===========================
+    Content Preview
+   =========================== */
+
+.pledge-form .content-preview {
+    margin: 1.25rem 0;
+    padding: 1rem;
+    background: rgba(139, 69, 19, 0.04);
+    border: 1px solid #D4C4B0;
+    border-radius: 4px;
+}
+
+.pledge-form .content-preview h4 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1rem;
+    color: #5D2E1F;
+    margin: 0 0 0.75rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #D4C4B0;
+}
+
+.pledge-form .formatted-content {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.95rem;
+    color: #4A3728;
+    line-height: 1.7;
+}
+
+.pledge-form .formatted-content p {
+    margin: 0 0 0.75rem 0;
+}
+
+.pledge-form .formatted-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* ===========================
+    Checkbox Field
+   =========================== */
+
+.pledge-form .checkbox-field {
+    flex-direction: row;
+    align-items: center;
+}
+
+.pledge-form .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+
+.pledge-form input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #8B4513;
+    cursor: pointer;
+}
+
+.pledge-form .checkbox-text {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.9rem;
+    color: #5D2E1F;
+    font-style: italic;
+}
+
+/* ===========================
+    Buttons
+   =========================== */
+
+.pledge-form .form-actions {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #D4C4B0;
+}
+
+.pledge-form .btn {
+    padding: 0.75rem 1.25rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.pledge-form .btn--primary {
+    background: linear-gradient(135deg, #8B4513 0%, #5D2E1F 100%);
+    color: #F9F6F0;
+    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.3);
+    width: 100%;
+}
+
+.pledge-form .btn--primary:hover {
+    background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
+}
+
+.pledge-form .btn--primary:disabled {
+    background: #B8A88A;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.pledge-form .btn--generate {
+    background: transparent;
+    color: #8B4513;
+    border: 1px solid #8B4513;
+    width: 100%;
+}
+
+.pledge-form .btn--generate:hover {
+    background: rgba(139, 69, 19, 0.08);
+}
+
+/* Spinner */
+.pledge-form .spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ===========================
+    Messages
+   =========================== */
+
+.pledge-form .error-message {
+    background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+    border: 1px solid #E9B8B8;
+    border-left: 4px solid #9B2C2C;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.pledge-form .error-message p {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.9rem;
+    color: #9B2C2C;
+    font-style: italic;
+    margin: 0;
+}
+
+.pledge-form .success-message {
+    background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+    border: 1px solid #BBF7D0;
+    border-left: 4px solid #22C55E;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.pledge-form .success-message p {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.9rem;
+    color: #166534;
+    margin: 0;
+}
+
+/* ===========================
+    Responsive
+   =========================== */
+
+@media (max-width: 600px) {
+    .pledge-form {
+        padding: 1.5rem;
     }
-    
-    .prompt-display {
+
+    .pledge-form .form-header h3 {
+        font-size: 1.3rem;
+    }
+
+    .pledge-form::before,
+    .pledge-form::after {
+        display: none;
+    }
+
+    .pledge-form .prompt-section {
+        padding: 1rem;
+    }
+
+    .pledge-form .prompt-display {
         padding: 0.75rem;
     }
 }
+
 
