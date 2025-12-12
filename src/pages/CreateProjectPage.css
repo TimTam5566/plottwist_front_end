@@ -1,29 +1,117 @@
-/* Simple page wrapper for project creation */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap');
 
-.create-page {
-    justify-content: center;
-    align-items: flex-start;
+.create-project-page {
+    min-height: 100vh;
+    background: linear-gradient(145deg, #f9f6f0 0%, #f5efe5 50%, #ebe3d6 100%);
+    padding: 2rem 0;
 }
 
-.create-card {
-    background: white;
-    padding: 2rem;
+.create-project-page .page-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* ===========================
+    Login Required Card
+   =========================== */
+
+.login-required-card {
+    background: linear-gradient(145deg, #fefdfb 0%, #f9f6f0 100%);
+    border: 2px solid #8B4513;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(139, 69, 19, 0.15);
+    max-width: 500px;
+    margin: 2rem auto;
 }
 
-.create-card h2 {
+.login-required-card .card-icon {
+    font-size: 3rem;
+    display: block;
     margin-bottom: 1rem;
-    color: #333;
 }
 
-.create-card a {
-    color: #007bff;
+.login-required-card h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #5D2E1F;
+    margin: 0 0 1rem 0;
+}
+
+.login-required-card p {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.05rem;
+    color: #4A3728;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.6;
+}
+
+.login-required-card .subtitle {
+    font-style: italic;
+    color: #8B7355;
+    margin-bottom: 2rem;
+}
+
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+.login-required-card .btn {
+    display: block;
+    padding: 0.85rem 1.5rem;
+    border-radius: 4px;
     text-decoration: none;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
 }
 
-.create-card a:hover {
-    text-decoration: underline;
+.login-required-card .btn--primary {
+    background: linear-gradient(135deg, #8B4513 0%, #5D2E1F 100%);
+    color: #F9F6F0;
+    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.3);
+}
+
+.login-required-card .btn--primary:hover {
+    background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
+}
+
+.login-required-card .btn--secondary {
+    background: transparent;
+    color: #8B4513;
+    border: 2px solid #8B4513;
+}
+
+.login-required-card .btn--secondary:hover {
+    background: rgba(139, 69, 19, 0.08);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .create-project-page {
+        padding: 1rem 0;
+    }
+
+    .create-project-page .page-wrap {
+        padding: 0 0.5rem;
+    }
+
+    .login-required-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .login-required-card h2 {
+        font-size: 1.5rem;
+    }
 }

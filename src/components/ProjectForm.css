@@ -1,234 +1,452 @@
-/* Basic project form styles */
-.project-form .form-field {
+/**
+ * ProjectForm.css - Literary Theme
+ * 
+ * Styled to match the Plot Twist literary theme
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap');
+
+/* ===========================
+    Form Wrapper
+   =========================== */
+
+.project-form-wrapper {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* ===========================
+    Form Container
+   =========================== */
+
+.project-form {
+    background: linear-gradient(145deg, #fefdfb 0%, #f9f6f0 100%);
+    border: 2px solid #8B4513;
+    border-radius: 8px;
+    padding: 2.5rem;
+    box-shadow: 
+        0 4px 20px rgba(139, 69, 19, 0.15),
+        inset 0 0 60px rgba(139, 69, 19, 0.02);
+    position: relative;
+}
+
+/* Decorative corners */
+.project-form::before,
+.project-form::after {
+    content: "❧";
+    position: absolute;
+    font-size: 1.5rem;
+    color: #8B4513;
+    opacity: 0.4;
+}
+
+.project-form::before {
+    top: 15px;
+    left: 20px;
+}
+
+.project-form::after {
+    bottom: 15px;
+    right: 20px;
+    transform: rotate(180deg);
+}
+
+/* ===========================
+    Form Header
+   =========================== */
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #D4C4B0;
+}
+
+.form-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-header h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #5D2E1F;
+    margin: 0 0 0.5rem 0;
+}
+
+.form-subtitle {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1rem;
+    color: #8B7355;
+    font-style: italic;
+    margin: 0;
+}
+
+/* ===========================
+    Form Fields
+   =========================== */
+
+.form-field {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    margin-bottom: 1.2rem;
-    position: relative;
-    width: 100%;
-}
-
-/* Container styles */
-.project-form-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.project-form-container .form-group {
+    gap: 0.5rem;
     margin-bottom: 1.5rem;
-    position: relative;
 }
 
-.project-form-container .error-text {
-    color: #dc3545;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-    position: absolute;
-    bottom: -20px;
+.form-field label {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #5D2E1F;
 }
 
-.project-form-container .error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    border: 1px solid #f5c6cb;
+.required {
+    color: #9B2C2C;
+}
+
+/* Input & Select Styles */
+.project-form input[type="text"],
+.project-form input[type="number"],
+.project-form select {
+    padding: 0.85rem 1rem;
+    border: 1px solid #D4C4B0;
     border-radius: 4px;
-}
-
-.project-form-container button {
-    background-color: #0d6efd;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    background: #FFFEF9;
+    color: #3D2914;
+    font-family: 'Lora', Georgia, serif;
     font-size: 1rem;
-    width: 100%;
-    transition: background-color 0.15s ease-in-out;
+    transition: all 0.3s ease;
 }
 
-.project-form-container button:hover {
-    background-color: #0b5ed7;
+.project-form input:focus,
+.project-form select:focus {
+    outline: none;
+    border-color: #8B4513;
+    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12);
+    background: #FFFFFF;
 }
 
-.project-form-container button:disabled {
-    background-color: #6c757d;
-    cursor: not-allowed;
+.project-form input::placeholder {
+    color: #B8A88A;
+    font-style: italic;
 }
 
-/* Form field styles */
+/* Textarea Styles */
+.project-form textarea {
+    padding: 1rem;
+    border: 1px solid #D4C4B0;
+    border-radius: 4px;
+    background: #FFFEF9;
+    color: #3D2914;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    min-height: 150px;
+    resize: vertical;
+    transition: all 0.3s ease;
+}
+
 .project-form textarea#description {
-    min-height: 300px;
-    width: 100%;
-    resize: vertical;
-    padding: 1rem;
-    overflow-y: auto;
-    line-height: 1.6;
-    font-size: 1rem;
+    min-height: 120px;
 }
 
-textarea#content_start {
-    min-height: 150px;
-    max-height: 300px;      /* Limits the height so it stays on one page */
-    resize: vertical;
-    overflow-y: auto;       /* Adds a scrollbar if content exceeds max-height */
-    line-height: 1.6;       /* Improves readability for paragraphs */
-    word-break: break-word; /* Ensures long words wrap */
-    padding: 1rem;          /* Adds space for easier reading */
+.project-form textarea#starting_content {
+    min-height: 200px;
 }
 
-/* Image styles */
-.project-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.project-image.error {
-    background-color: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.project-image.error span {
-    color: #ff4d4f;
-    font-size: 0.9rem;
-}
-
-/* Form elements */
-textarea#content_start{
-    min-height: 150px;
-    resize: vertical;
-}
-
-.form-field textarea {
-    min-height: 150px;
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-    resize: vertical;
-    font-family: inherit;
-    line-height: 1.5;
-}
-
-.form-field textarea:focus {
+.project-form textarea:focus {
     outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    border-color: #8B4513;
+    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12);
+    background: #FFFFFF;
 }
 
-/* Input styles */
-.project-form input[type="text"] {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-    font-family: inherit;
-    font-size: 1rem;
+.project-form textarea::placeholder {
+    color: #B8A88A;
+    font-style: italic;
 }
 
-.project-form input[type="text"]:focus {
-    outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+/* Select dropdown arrow styling */
+.project-form select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B4513' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
 }
 
-/* Error states */
-.project-form .form-field.has-error input,
-.project-form .form-field.has-error textarea,
-.project-form .form-field.has-error select {
-    border-color: #dc2626;
-    background-color: #fff5f5;
+/* Form Row (side by side fields) */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
 }
 
-.project-form .error-text {
-    color: #dc2626;
-    font-size: 0.875rem;
+/* ===========================
+    Error States
+   =========================== */
+
+.project-form input.has-error,
+.project-form textarea.has-error,
+.project-form select.has-error {
+    border-color: #9B2C2C;
+    background-color: #FEF2F2;
+}
+
+.error-text {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.85rem;
+    color: #9B2C2C;
+    font-style: italic;
     margin-top: 0.25rem;
+}
+
+.api-error {
+    background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+    border: 1px solid #E9B8B8;
+    border-left: 4px solid #9B2C2C;
+    border-radius: 4px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.api-error .error-icon {
+    font-size: 1.5rem;
     display: block;
-    position: relative;
-    z-index: 3;
+    margin-bottom: 0.5rem;
 }
 
-.project-form .submit-error {
-    color: #dc2626;
-    background-color: #fee2e2;
-    padding: 0.75rem;
-    border-radius: 0.375rem;
-    margin-bottom: 1rem;
-    border: 1px solid #fecaca;
+.api-error p {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.95rem;
+    color: #9B2C2C;
+    font-style: italic;
+    margin: 0;
+    line-height: 1.6;
 }
 
-/* Required field indicator */
-.project-form .form-field.required label::after {
-    content: " *";
-    color: #dc2626;
+/* ===========================
+    Content Preview
+   =========================== */
+
+.content-preview {
+    background: rgba(139, 69, 19, 0.04);
+    border: 1px solid #D4C4B0;
+    border-radius: 4px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
 }
+
+.content-preview h4 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1rem;
+    color: #5D2E1F;
+    margin: 0 0 0.75rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #D4C4B0;
+}
+
+.formatted-content {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.95rem;
+    color: #4A3728;
+    line-height: 1.7;
+}
+
+.formatted-content p {
+    margin: 0 0 0.75rem 0;
+}
+
+.formatted-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* ===========================
+    Progress Bar
+   =========================== */
 
 .progress-section {
     margin-top: 1rem;
-    width: 100%;
-    display: block;
-    clear: both;
-    padding: 0.5rem 0;
+    padding: 1rem;
+    background: rgba(139, 69, 19, 0.04);
+    border-radius: 4px;
 }
 
 .progress-bar {
     width: 100%;
-    height: 20px;
-    background-color: #e9ecef;
-    border-radius: 10px;
+    height: 12px;
+    background: #E6DED3;
+    border-radius: 6px;
     overflow: hidden;
-    margin: 0.5rem 0;
-    position: relative;
-    z-index: 1;
+    margin-bottom: 0.5rem;
 }
 
 .progress-fill {
     height: 100%;
-    background-color: #4f46e5;
-    transition: width 0.3s ease-in-out;
-    position: relative;
-    z-index: 2;
+    background: linear-gradient(90deg, #8B4513 0%, #A0522D 100%);
+    border-radius: 6px;
+    transition: width 0.3s ease;
 }
 
 .progress-text {
-    font-size: 0.9rem;
-    color: #6b7280;
-    margin: 0.25rem 0;
-    display: block;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.85rem;
+    color: #8B7355;
     text-align: center;
-}
-
-.api-error {
-    background-color: #fff5f5;
-    border: 1px solid #fc8181;
-    border-radius: 4px;
-    color: #c53030;
-    margin: 1rem 0;
-    padding: 1.25rem;
-    text-align: center;
-    font-style: italic;
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(-10px); 
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    }
-}
-
-.api-error p {
     margin: 0;
-    line-height: 1.5;
+}
+
+/* ===========================
+    File Input
+   =========================== */
+
+.file-input-wrapper {
+    position: relative;
+}
+
+.project-form input[type="file"] {
+    padding: 0.85rem 1rem;
+    border: 1px dashed #D4C4B0;
+    border-radius: 4px;
+    background: #FFFEF9;
+    width: 100%;
+    cursor: pointer;
+    font-family: 'Lora', Georgia, serif;
+}
+
+.project-form input[type="file"]:hover {
+    border-color: #8B4513;
+    background: rgba(139, 69, 19, 0.02);
+}
+
+.image-preview {
+    margin-top: 1rem;
+}
+
+.image-preview img {
+    max-width: 200px;
+    border-radius: 4px;
+    border: 2px solid #D4C4B0;
+    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.1);
+}
+
+/* ===========================
+    Buttons
+   =========================== */
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #D4C4B0;
+}
+
+.btn {
+    padding: 0.85rem 1.5rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn--primary {
+    background: linear-gradient(135deg, #8B4513 0%, #5D2E1F 100%);
+    color: #F9F6F0;
+    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.3);
+    flex: 1;
+}
+
+.btn--primary:hover {
+    background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
+}
+
+.btn--primary:disabled {
+    background: #B8A88A;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn--secondary {
+    background: transparent;
+    color: #8B4513;
+    border: 2px solid #8B4513;
+}
+
+.btn--secondary:hover {
+    background: rgba(139, 69, 19, 0.08);
+}
+
+/* Spinner animation */
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ===========================
+    Form Footer
+   =========================== */
+
+.form-footer {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.8rem;
+    color: #8B7355;
+    text-align: center;
+    margin: 1.5rem 0 0 0;
+}
+
+/* ===========================
+    Responsive
+   =========================== */
+
+@media (max-width: 600px) {
+    .project-form-wrapper {
+        padding: 0 0.5rem;
+        margin: 1rem auto;
+    }
+
+    .project-form {
+        padding: 1.5rem;
+    }
+
+    .form-header h2 {
+        font-size: 1.6rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .project-form::before,
+    .project-form::after {
+        display: none;
+    }
 }

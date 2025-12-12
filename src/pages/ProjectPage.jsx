@@ -1,3 +1,10 @@
+/**
+ * ProjectPage.jsx - Literary Theme
+ * 
+ * Displays a single project with the full story/poem
+ * Each contribution shows the author name underneath
+ */
+
 import { useParams, Link } from "react-router-dom";
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import PledgeForm from "../components/PledgeForm";
@@ -12,6 +19,7 @@ function ProjectPage() {
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showPledgeModal, setShowPledgeModal] = useState(false);
 
     const { calculateProgress, getContentLabel } = useProjectProgress();
 
@@ -26,7 +34,42 @@ function ProjectPage() {
         return "/images/default.jpg";
     };
 
-    // Debug logs with more info
+    // Format content into paragraphs
+    const formatContent = (content) => {
+        if (!content) return null;
+        
+        const paragraphs = content.split(/\n\n+/).filter(p => p.trim());
+        
+        return paragraphs.map((paragraph, index) => (
+            <p key={index} className="content-paragraph">
+                {paragraph.trim()}
+            </p>
+        ));
+    };
+
+    // Format verses (for poems - split by single newline)
+    const formatVerses = (content) => {
+        if (!content) return null;
+        
+        const lines = content.split(/\n/).filter(line => line.trim());
+        
+        return lines.map((line, index) => (
+            <p key={index} className="content-verse">
+                {line.trim()}
+            </p>
+        ));
+    };
+
+    // Choose formatting based on content type
+    const renderContent = (content, isFirstSection = false) => {
+        if (!content) return <p className="no-content">No content yet...</p>;
+        
+        if (project?.content_type === 'poem') {
+            return formatVerses(content);
+        }
+        return formatContent(content);
+    };
+
     console.log("Current auth state:", {
         token: auth?.token,
         user_id: auth?.user_id,
@@ -44,6 +87,7 @@ function ProjectPage() {
     , [project?.image]);
 
     const handlePledgeSuccess = useCallback(() => {
+        setShowPledgeModal(false); // Close modal on success
         if (auth?.token) {
             const headers = {
                 "Authorization": `Token ${auth.token}`
@@ -69,7 +113,6 @@ function ProjectPage() {
         setLoading(true);
         setError(null);
 
-        // Only add Authorization header if token exists
         const headers = {};
         if (auth?.token) {
             headers["Authorization"] = `Token ${auth.token}`;
@@ -104,59 +147,196 @@ function ProjectPage() {
     };
 
     return (
-        <div className="page-wrap">
-            <h2>Project Details</h2>
-            {loading && <p>Loading...</p>}
-            {error && <p style={{ color: "red" }}>Error: {error}</p>}
-            {project && !error && (
-                <>
-                    <div className="project-header">
-                        <h3>{project.title}</h3>
-                        {isProjectOwner() && (
-                            <Link to={`/project/${project.id}/edit`} className="edit-button">
-                                Edit Project
-                            </Link>
-                        )}
+        <div className="project-page">
+            <div className="page-wrap">
+                {loading && (
+                    <div className="loading-state">
+                        <span className="loading-icon">📖</span>
+                        <p>Opening the book...</p>
                     </div>
-                    <img
-                        src={imageUrl}
-                        alt={project?.title}
-                        className="project-image"
-                        onError={(e) => {
-                            e.target.src = "/images/default.jpg";
-                        }}
-                    />
-                    <p><strong>Description:</strong> {project.description}</p>
-                    <p><strong>Genre:</strong> {project.genre}</p>
-                    <p><strong>Goal:</strong> {project.goal}</p>
-                    <p><strong>Starting Content:</strong></p>
-                    <pre>{project.starting_content}</pre>
-                    <p><strong>Current Content:</strong></p>
-                    <pre>{project.current_content}</pre>
+                )}
+                
+                {error && (
+                    <div className="error-state">
+                        <p>Alas! The page seems to be missing from our library.</p>
+                        <p className="error-detail">{error}</p>
+                    </div>
+                )}
+                
+                {project && !error && (
+                    <article className="project-article">
+                        {/* Header */}
+                        <header className="project-header">
+                            <div className="header-content">
+                                <h1 className="project-title">{project.title}</h1>
+                                <div className="project-meta-tags">
+                                    {project.genre && (
+                                        <span className="meta-tag genre-tag">{project.genre}</span>
+                                    )}
+                                    {project.content_type && (
+                                        <span className="meta-tag type-tag">
+                                            {project.content_type === 'poem' ? '📜 Poem' : '📖 Story'}
+                                        </span>
+                                    )}
+                                    <span className={`meta-tag status-tag ${project.is_open ? 'open' : 'closed'}`}>
+                                        {project.is_open ? '✨ Open for contributions' : '📕 Completed'}
+                                    </span>
+                                </div>
+                            </div>
+                            {isProjectOwner() && (
+                                <Link to={`/project/${project.id}/edit`} className="edit-button">
+                                    ✎ Edit Project
+                                </Link>
+                            )}
+                        </header>
 
-                    <div className="progress-section">
-                        <h4>Progress Tracker</h4>
-                        <div className="progress-bar">
-                            <div 
-                                className="progress-fill"
-                                style={{ width: `${calculatePledgeProgress()}%` }}
+                        {/* Featured Image */}
+                        <div className="project-image-container">
+                            <img
+                                src={imageUrl}
+                                alt={project?.title}
+                                className="project-image"
+                                onError={(e) => {
+                                    e.target.src = "/images/default.jpg";
+                                }}
                             />
                         </div>
-                        <p className="progress-text">
-                            Progress: {project.pledges?.length || 0} pledges
-                            ({Math.round(calculatePledgeProgress())}% of goal)
-                        </p>
-                    </div>
 
-                    <p><strong>Open for contributions:</strong> {project.is_open ? "Yes" : "No"}</p>
-                    <p><strong>Date Created:</strong> {new Date(project.date_created).toLocaleString()}</p>
-                    <PledgeForm 
-                        projectId={project?.id} 
-                        project={project}
-                        onSuccess={handlePledgeSuccess}
-                    />
-                </>
-            )}
+                        {/* Description */}
+                        <section className="project-section description-section">
+                            <h2 className="section-title">
+                                <span className="flourish">❧</span>
+                                The Tale
+                                <span className="flourish">❧</span>
+                            </h2>
+                            <p className="project-description">{project.description}</p>
+                        </section>
+
+                        {/* Progress Tracker */}
+                        <section className="project-section progress-section">
+                            <h2 className="section-title">
+                                <span className="flourish">❧</span>
+                                Journey Progress
+                                <span className="flourish">❧</span>
+                            </h2>
+                            <div className="progress-card">
+                                <div className="progress-bar">
+                                    <div 
+                                        className="progress-fill"
+                                        style={{ width: `${calculatePledgeProgress()}%` }}
+                                    />
+                                </div>
+                                <p className="progress-text">
+                                    {project.pledges?.length || 0} contributions
+                                    • {Math.round(calculatePledgeProgress())}% of {project.goal} {project.content_type === 'poem' ? 'verses' : 'paragraphs'}
+                                </p>
+                            </div>
+                        </section>
+
+                        {/* THE FULL STORY - Combined View */}
+                        <section className="project-section content-section">
+                            <h2 className="section-title">
+                                <span className="flourish">❧</span>
+                                {project.content_type === 'poem' ? 'The Complete Poem' : 'The Full Story'}
+                                <span className="flourish">❧</span>
+                            </h2>
+                            
+                            <div className="content-display full-story">
+                                {/* Starting Content - by project owner */}
+                                <div className="story-section story-opening">
+                                    {renderContent(project.starting_content)}
+                                    <p className="contribution-author">
+                                        — {project.owner_username || 'The Author'}
+                                        <span className="author-note">(Opening)</span>
+                                    </p>
+                                </div>
+
+                                {/* All Pledges/Contributions */}
+                                {project.pledges && project.pledges.length > 0 && (
+                                    <>
+                                        {project.pledges.map((pledge, index) => (
+                                            <div key={pledge.id || index} className="story-section story-contribution">
+                                                {renderContent(pledge.add_content || pledge.content)}
+                                                <p className="contribution-author">
+                                                    — {pledge.anonymous 
+                                                        ? 'A Mysterious Stranger' 
+                                                        : (pledge.pledger?.username || 'Anonymous')}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </>
+                                )}
+                            </div>
+                        </section>
+
+                        {/* Date */}
+                        <p className="project-date">
+                            Tale begun on {new Date(project.date_created).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })}
+                        </p>
+
+                        {/* Pledge Form */}
+                        {project.is_open && auth?.token && (
+                            <section className="project-section contribute-section">
+                                <h2 className="section-title">
+                                    <span className="flourish">❧</span>
+                                    Add Your Chapter
+                                    <span className="flourish">❧</span>
+                                </h2>
+                                <p className="contribute-text">
+                                    Have something to add to this tale?
+                                </p>
+                                <button 
+                                    className="btn btn--primary contribute-btn"
+                                    onClick={() => setShowPledgeModal(true)}
+                                >
+                                    🪶 Contribute Your Words
+                                </button>
+                            </section>
+                        )}
+
+                        {/* Login prompt if not authenticated */}
+                        {project.is_open && !auth?.token && (
+                            <section className="project-section contribute-section">
+                                <h2 className="section-title">
+                                    <span className="flourish">❧</span>
+                                    Add Your Chapter
+                                    <span className="flourish">❧</span>
+                                </h2>
+                                <p className="contribute-text">
+                                    Want to add your voice to this tale?
+                                </p>
+                                <Link to="/login" className="btn btn--primary contribute-btn">
+                                    🪶 Sign In to Contribute
+                                </Link>
+                            </section>
+                        )}
+                    </article>
+                )}
+
+                {/* Pledge Modal */}
+                {showPledgeModal && (
+                    <div className="modal-overlay" onClick={() => setShowPledgeModal(false)}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <button 
+                                className="modal-close" 
+                                onClick={() => setShowPledgeModal(false)}
+                                aria-label="Close"
+                            >
+                                ✕
+                            </button>
+                            <PledgeForm 
+                                projectId={project?.id} 
+                                project={project}
+                                onSuccess={handlePledgeSuccess}
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
