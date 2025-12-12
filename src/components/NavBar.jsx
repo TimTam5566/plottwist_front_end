@@ -3,23 +3,37 @@
  * 
  * Features:
  * - Logo on left
+/**
+ * NavBar.jsx - Literary Theme
+ * 
+ * Features:
+ * - Logo on left
  * - Navigation links
+ * - Username display when logged in
  * - Hamburger menu for mobile
  * - Matches literary burgundy/cream theme
  */
 
-import { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth.js";
 import './NavBar.css';
 
 function NavBar() {
     const { auth, setAuth } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { pathname } = useLocation();
+
+    // Scroll to top on route change
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
 
     const handleLogout = () => {
         window.localStorage.removeItem("token");
-        setAuth({ token: null });
+        window.localStorage.removeItem("user_id");
+        window.localStorage.removeItem("username");
+        setAuth({ token: null, user_id: null, username: null });
         setIsMenuOpen(false);
     };
 
@@ -68,9 +82,16 @@ function NavBar() {
                         <div className="nav-divider"></div>
                         
                         {auth.token ? (
-                            <Link to="/" onClick={handleLogout} className="nav-auth">
-                                Log Out
-                            </Link>
+                            <>
+                                {/* Username display */}
+                                <span className="nav-username">
+                                    <span className="username-icon">🪶</span>
+                                    {auth.username || 'Author'}
+                                </span>
+                                <Link to="/" onClick={handleLogout} className="nav-auth nav-logout">
+                                    Log Out
+                                </Link>
+                            </>
                         ) : (
                             <>
                                 <Link to="/login" onClick={closeMenu} className="nav-auth">

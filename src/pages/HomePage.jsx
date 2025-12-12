@@ -125,7 +125,10 @@ function HomePage() {
                 <section className="cta-section">
                     <div className="cta-content">
                         <p className="cta-text">Ready to write your own adventure?</p>
-                        <Link to="/create-project" className="btn btn--primary">
+                        <Link to="/create-project" 
+                        className="btn btn--primary"
+                        onClick={() => window.scrollTo(0, 0)}
+                        >
                             Create Your Story
                         </Link>
                     </div>

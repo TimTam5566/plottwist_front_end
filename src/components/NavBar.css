@@ -33,7 +33,7 @@
 }
 
 /* ===========================
-    Logo
+   Logo
    =========================== */
 
 .navbar-logo {
@@ -122,6 +122,29 @@
 .nav-auth {
     color: #8B4513 !important;
     font-style: italic;
+}
+
+/* Username display */
+.nav-username {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #5D2E1F;
+    padding: 0.4rem 0.8rem;
+    background: rgba(139, 69, 19, 0.08);
+    border-radius: 20px;
+    border: 1px solid rgba(139, 69, 19, 0.15);
+}
+
+.username-icon {
+    font-size: 0.85rem;
+}
+
+.nav-logout {
+    font-size: 0.85rem;
 }
 
 /* ===========================
@@ -291,4 +314,5 @@
         padding: 0.5rem 1.25rem;
     }
 }
+
 
