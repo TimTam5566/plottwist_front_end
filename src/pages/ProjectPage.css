@@ -546,6 +546,88 @@
 }
 
 /* ===========================
+    Contribute Hint (points to sticky button)
+   =========================== */
+
+.contribute-hint {
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-top: 1rem;
+    padding: 2rem 1rem 8rem 1rem;
+}
+
+.contribute-hint p {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2rem;
+    font-style: italic;
+    color: #8B4513;
+    margin: 0;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { 
+        opacity: 1;           /* fully visible */
+        transform: scale(1);  /* normal size */
+    }
+    50% { 
+        opacity: 0.4;         /* faded */
+        transform: scale(1.1); /* slightly bigger */
+    }
+}
+
+/* ===========================
+    Sticky Contribute Button
+   =========================== */
+
+.sticky-contribute-btn {
+    position: fixed;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #8B4513 0%, #5D2E1F 100%);
+    color: #F9F6F0;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.4);
+    transition: all 0.3s ease;
+}
+
+.sticky-contribute-btn:hover {
+    background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+    transform: translateX(-50%) translateY(-3px);
+    box-shadow: 0 6px 20px rgba(139, 69, 19, 0.5);
+}
+
+.sticky-contribute-btn .btn-icon {
+    font-size: 1.2rem;
+}
+
+/* Hide the old contribute section when using sticky button */
+.contribute-section {
+    display: none;
+}
+
+/* Responsive sticky button */
+@media (max-width: 600px) {
+    .sticky-contribute-btn {
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.85rem 1.25rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* ===========================
     Modal Overlay & Content
    =========================== */
 
@@ -553,16 +635,17 @@
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100vw;
+    height: 100vh;
     background: rgba(93, 46, 31, 0.6);
     backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 9999;
     padding: 1rem;
     animation: fadeIn 0.2s ease;
+    overflow-y: auto;
 }
 
 @keyframes fadeIn {
@@ -577,10 +660,11 @@
     box-shadow: 0 10px 40px rgba(93, 46, 31, 0.4);
     max-width: 600px;
     width: 100%;
-    max-height: 90vh;
+    max-height: 85vh;
     overflow-y: auto;
     position: relative;
     animation: slideUp 0.3s ease;
+    margin: auto;
 }
 
 @keyframes slideUp {

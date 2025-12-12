@@ -289,12 +289,6 @@ function ProjectPage() {
                                 <p className="contribute-text">
                                     Have something to add to this tale?
                                 </p>
-                                <button 
-                                    className="btn btn--primary contribute-btn"
-                                    onClick={() => setShowPledgeModal(true)}
-                                >
-                                    🪶 Contribute Your Words
-                                </button>
                             </section>
                         )}
 
@@ -314,29 +308,47 @@ function ProjectPage() {
                                 </Link>
                             </section>
                         )}
+
+                        {/* Hint for logged-in users pointing to sticky button */}
+                        {project.is_open && auth?.token && (
+                            <div className="contribute-hint">
+                                <p>Ready to add your voice?</p>
+                            </div>
+                        )}
                     </article>
                 )}
 
-                {/* Pledge Modal */}
-                {showPledgeModal && (
-                    <div className="modal-overlay" onClick={() => setShowPledgeModal(false)}>
-                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                            <button 
-                                className="modal-close" 
-                                onClick={() => setShowPledgeModal(false)}
-                                aria-label="Close"
-                            >
-                                ✕
-                            </button>
-                            <PledgeForm 
-                                projectId={project?.id} 
-                                project={project}
-                                onSuccess={handlePledgeSuccess}
-                            />
-                        </div>
-                    </div>
+                {/* Sticky Contribute Button - Fixed at bottom of screen */}
+                {project && project.is_open && auth?.token && (
+                    <button 
+                        className="sticky-contribute-btn"
+                        onClick={() => setShowPledgeModal(true)}
+                    >
+                        <span className="btn-icon">🪶</span>
+                        Contribute
+                    </button>
                 )}
             </div>
+
+            {/* Pledge Modal - Outside page-wrap for proper fixed positioning */}
+            {showPledgeModal && (
+                <div className="modal-overlay" onClick={() => setShowPledgeModal(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button 
+                            className="modal-close" 
+                            onClick={() => setShowPledgeModal(false)}
+                            aria-label="Close"
+                        >
+                            ✕
+                        </button>
+                        <PledgeForm 
+                            projectId={project?.id} 
+                            project={project}
+                            onSuccess={handlePledgeSuccess}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
