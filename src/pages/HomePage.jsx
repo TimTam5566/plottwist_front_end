@@ -114,7 +114,7 @@ function HomePage() {
                         <div className="empty-message">
                             <p className="empty-title">The library awaits its first story...</p>
                             <p className="empty-subtitle">Be the first to create a tale!</p>
-                            <Link to="/create" className="btn btn--primary">
+                            <Link to="/create-project" className="btn btn--primary">
                                 Begin Writing
                             </Link>
                         </div>
@@ -125,7 +125,7 @@ function HomePage() {
                 <section className="cta-section">
                     <div className="cta-content">
                         <p className="cta-text">Ready to write your own adventure?</p>
-                        <Link to="/create" className="btn btn--primary">
+                        <Link to="/create-project" className="btn btn--primary">
                             Create Your Story
                         </Link>
                     </div>
