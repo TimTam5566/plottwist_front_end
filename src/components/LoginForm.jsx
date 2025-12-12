@@ -1,3 +1,9 @@
+/**
+ * LoginForm.jsx - Literary Theme
+ * 
+ * Login form that saves username to auth context
+ */
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
@@ -5,7 +11,7 @@ import "./LoginForm.css";
 
 function LoginForm() {
     const navigate = useNavigate();
-    const { auth, handleLogin } = useAuth();
+    const { handleLogin } = useAuth();
     const [formData, setFormData] = useState({
         username: "",
         password: "",
@@ -24,7 +30,7 @@ function LoginForm() {
         e.preventDefault();
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api-token-auth/`, {
-                method: "post",
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -33,9 +39,12 @@ function LoginForm() {
                     password: formData.password,
                 }),
             });
+
             const data = await response.json();
+
             if (response.ok) {
-                handleLogin(data.token, data.user_id);
+                // Pass username along with token and user_id
+                handleLogin(data.token, data.user_id, formData.username);
                 navigate("/");
             } else {
                 setError("We knocked, but the castle gates stayed shut. Check your spellbook (or your password).");
@@ -63,7 +72,6 @@ function LoginForm() {
                     required
                 />
             </div>
-
             <div className="form-field">
                 <label htmlFor="password">Secret Word</label>
                 <input
@@ -75,7 +83,6 @@ function LoginForm() {
                     required
                 />
             </div>
-
             <div className="form-actions">
                 <button type="submit" className="btn btn--primary">Enter the Library</button>
                 <button type="button" className="btn btn--ghost" onClick={() => navigate('/signup')}>

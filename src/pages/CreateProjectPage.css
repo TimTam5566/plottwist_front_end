@@ -1,9 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap');
 
 .create-project-page {
-    min-height: 100vh;
+    .create-project-page {
     background: linear-gradient(145deg, #f9f6f0 0%, #f5efe5 50%, #ebe3d6 100%);
     padding: 2rem 0;
+}
 }
 
 .create-project-page .page-wrap {
