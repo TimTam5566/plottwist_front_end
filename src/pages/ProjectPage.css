@@ -153,19 +153,22 @@
 }
 
 .edit-button {
-    font-family: 'Lora', Georgia, serif;
-    font-size: 0.85rem;
-    color: #8B4513;
-    text-decoration: none;
+    background: linear-gradient(135deg, #8B4513 0%, #5D2E1F 100%);
+    color: #F9F6F0;
     padding: 0.5rem 1rem;
-    border: 1px solid #8B4513;
     border-radius: 4px;
-    transition: all 0.2s ease;
-    white-space: nowrap;
+    text-decoration: none;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.3);
 }
 
 .edit-button:hover {
-    background: rgba(139, 69, 19, 0.1);
+    background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
 }
 
 /* ===========================
