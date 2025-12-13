@@ -1,4 +1,10 @@
-import { useState, useEffect } from "react";
+/**
+ * EditProject.jsx - Literary Theme
+ * 
+ * Edit an existing project/tale
+ */
+
+import { useState, useEffect, useLayoutEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import putProject from "../api/put-project";
 import getProject from "../api/get-project";
@@ -20,6 +26,13 @@ function EditProject() {
     const [imagePreview, setImagePreview] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    // Scroll to top when page loads
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    }, []);
 
     useEffect(() => {
         const fetchProject = async () => {
@@ -91,95 +104,150 @@ function EditProject() {
         }
     };
 
+    const handleCancel = () => {
+        navigate(`/project/${id}`);
+    };
+
     return (
-        <div className="page-wrap">
-            <h2>Edit Project</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="title">Title:</label>
-                    <input
-                        type="text"
-                        id="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+        <div className="edit-project-page">
+            <div className="page-wrap">
+                <div className="edit-form-container">
+                    <div className="form-header">
+                        <span className="form-icon">✎</span>
+                        <h1>Revise Your Tale</h1>
+                        <p className="form-subtitle">Every story deserves a second draft...</p>
+                    </div>
 
-                <div>
-                    <label htmlFor="description">Description:</label>
-                    <textarea
-                        id="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor="genre">Genre:</label>
-                    <input
-                        type="text"
-                        id="genre"
-                        value={formData.genre}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor="goal">Goal:</label>
-                    <input
-                        type="number"
-                        id="goal"
-                        value={formData.goal}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor="image">Project Image:</label>
-                    <input
-                        type="file"
-                        id="image"
-                        accept="image/*"
-                        onChange={handleChange}
-                    />
-                    {imagePreview && (
-                        <img 
-                            src={imagePreview}
-                            alt="Project preview" 
-                            style={{ maxWidth: '200px', marginTop: '10px' }} 
-                        />
+                    {error && (
+                        <div className="error-message">
+                            <p>{error}</p>
+                        </div>
                     )}
-                </div>
 
-                <div>
-                    <label htmlFor="starting_content">Starting Content:</label>
-                    <textarea
-                        id="starting_content"
-                        value={formData.starting_content}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                    <form onSubmit={handleSubmit} className="edit-form">
+                        <div className="form-field">
+                            <label htmlFor="title">Title <span className="required">*</span></label>
+                            <input
+                                type="text"
+                                id="title"
+                                value={formData.title}
+                                onChange={handleChange}
+                                placeholder="What shall we call this tale?"
+                                required
+                            />
+                        </div>
 
-                <div>
-                    <label htmlFor="is_open">Open for contributions:</label>
-                    <input
-                        type="checkbox"
-                        id="is_open"
-                        checked={formData.is_open}
-                        onChange={handleChange}
-                    />
-                </div>
+                        <div className="form-field">
+                            <label htmlFor="description">Description <span className="required">*</span></label>
+                            <textarea
+                                id="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                placeholder="Set the scene for your readers..."
+                                required
+                                rows="4"
+                            />
+                        </div>
 
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                <button type="submit" disabled={loading}>
-                    {loading ? "Saving..." : "Save Changes"}
-                </button>
-            </form>
+                        <div className="form-row">
+                            <div className="form-field">
+                                <label htmlFor="genre">Genre <span className="required">*</span></label>
+                                <input
+                                    type="text"
+                                    id="genre"
+                                    value={formData.genre}
+                                    onChange={handleChange}
+                                    placeholder="Fantasy, Romance, Mystery..."
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-field">
+                                <label htmlFor="goal">Goal (verses/paragraphs) <span className="required">*</span></label>
+                                <input
+                                    type="number"
+                                    id="goal"
+                                    value={formData.goal}
+                                    onChange={handleChange}
+                                    placeholder="How many contributions?"
+                                    required
+                                    min="1"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-field">
+                            <label htmlFor="image">Cover Image</label>
+                            <div className="image-upload-area">
+                                <input
+                                    type="file"
+                                    id="image"
+                                    accept="image/*"
+                                    onChange={handleChange}
+                                    className="file-input"
+                                />
+                                <label htmlFor="image" className="file-label">
+                                    📷 Choose a new cover image
+                                </label>
+                            </div>
+                            {imagePreview && (
+                                <div className="image-preview">
+                                    <img 
+                                        src={imagePreview}
+                                        alt="Project preview" 
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="form-field">
+                            <label htmlFor="starting_content">Opening Words <span className="required">*</span></label>
+                            <textarea
+                                id="starting_content"
+                                value={formData.starting_content}
+                                onChange={handleChange}
+                                placeholder="The first words of your tale..."
+                                required
+                                rows="8"
+                            />
+                        </div>
+
+                        <div className="form-field checkbox-field">
+                            <label htmlFor="is_open" className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    id="is_open"
+                                    checked={formData.is_open}
+                                    onChange={handleChange}
+                                />
+                                <span className="checkbox-text">
+                                    {formData.is_open 
+                                        ? "✨ Open for contributions — fellow authors may add their voice" 
+                                        : "📕 Closed — this tale is complete"}
+                                </span>
+                            </label>
+                        </div>
+
+                        <div className="form-actions">
+                            <button type="submit" className="btn btn--primary" disabled={loading}>
+                                {loading ? (
+                                    <>
+                                        <span className="spinner">✒</span>
+                                        Saving your revisions...
+                                    </>
+                                ) : (
+                                    "Save Changes"
+                                )}
+                            </button>
+                            <button type="button" className="btn btn--secondary" onClick={handleCancel}>
+                                Cancel
+                            </button>
+                        </div>
+
+                        <p className="form-note">* Required fields</p>
+                    </form>
+                </div>
+            </div>
         </div>
     );
 }
