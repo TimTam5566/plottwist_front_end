@@ -1,48 +1,37 @@
-/** ============================================================
- * USE-CREATE-PROJECT.JS - Create New Project Hook
- * ============================================================
- * 
- * WHAT THIS DOES:
- * Handles creating a new project with loading/error/success states.
- * 
- * RETURNS:
- * - createProject(projectData): Async function to create project
- * - isLoading: Boolean - is submission in progress?
- * - error: Error message or null
- * - success: Boolean - did creation succeed?
- */
-
 import { useState } from "react";
-
-import { API_URL } from "../config";
+import postProject from "../api/post-project";
 
 export default function useCreateProject() {
+    // ============================================================
+    // STATE
+    // ============================================================
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
 
-    const createProject = async (projectData) => {
+    // ============================================================
+    // CREATE PROJECT FUNCTION
+    // ============================================================
+    /**
+     * Creates a new project with optional image upload
+     * 
+     * @param {Object} projectData - Project fields (title, description, image, etc.)
+     * @param {string} authToken - User's auth token
+     * @param {string|number} userId - User's ID (will be set as owner)
+     * @returns {Object} - Created project data from API
+     */
+    const createProject = async (projectData, authToken, userId) => {
         setIsLoading(true);
         setError(null);
+        setSuccess(false);
 
         try {
-            const response = await fetch(`${API_URL}/projects/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Token ${localStorage.getItem("token")}`,
-                },
-                body: JSON.stringify(projectData),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.detail || "Failed to create project");
-            }
-
+            // Call the API function
+            const data = await postProject(projectData, authToken, userId);
+            
             setSuccess(true);
             return data;
+
         } catch (err) {
             setError(err.message);
             throw err;
@@ -51,5 +40,17 @@ export default function useCreateProject() {
         }
     };
 
-    return { createProject, isLoading, error, success };
+    // ============================================================
+    // RESET FUNCTION
+    // ============================================================
+    /**
+     * Reset all states (useful for form reset or retry)
+     */
+    const reset = () => {
+        setIsLoading(false);
+        setError(null);
+        setSuccess(false);
+    };
+
+    return { createProject, isLoading, error, success, reset };
 }

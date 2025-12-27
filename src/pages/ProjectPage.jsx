@@ -36,15 +36,16 @@ function ProjectPage() {
 
     // Format content into paragraphs
     const formatContent = (content) => {
-        if (!content) return null;
-        
-        const paragraphs = content.split(/\n\n+/).filter(p => p.trim());
-        
-        return paragraphs.map((paragraph, index) => (
-            <p key={index} className="content-paragraph">
-                {paragraph.trim()}
-            </p>
-        ));
+    if (!content) return null;
+    
+    // Split on double newline OR single newline
+    const paragraphs = content.split(/\n+/).filter(p => p.trim());
+    
+    return paragraphs.map((paragraph, index) => (
+        <p key={index} className="content-paragraph">
+            {paragraph.trim()}
+        </p>
+    ));
     };
 
     // Format verses (for poems - split by single newline)
@@ -70,13 +71,6 @@ function ProjectPage() {
         return formatContent(content);
     };
 
-    console.log("Current auth state:", {
-        token: auth?.token,
-        user_id: auth?.user_id,
-        localStorage_token: window.localStorage.getItem("token"),
-        localStorage_user_id: window.localStorage.getItem("user_id")
-    });
-
     const isProjectOwner = useCallback(() => {
         const userId = window.localStorage.getItem("user_id");
         return parseInt(userId) === project?.owner;
@@ -87,13 +81,13 @@ function ProjectPage() {
     , [project?.image]);
 
     const handlePledgeSuccess = useCallback(() => {
-        setShowPledgeModal(false); // Close modal on success
+        setShowPledgeModal(false);
         if (auth?.token) {
             const headers = {
                 "Authorization": `Token ${auth.token}`
             };
 
-            fetch(`${import.meta.env.VITE_API_URL}/projects/${id}/`, { headers })
+            fetch(`${API_URL}/projects/${id}/`, { headers })
                 .then(res => {
                     if (!res.ok) {
                         throw new Error(`Error refreshing project: ${res.status}`);
@@ -118,7 +112,7 @@ function ProjectPage() {
             headers["Authorization"] = `Token ${auth.token}`;
         }
 
-        fetch(`${import.meta.env.VITE_API_URL}/projects/${id}/`, { headers })
+        fetch(`${API_URL}/projects/${id}/`, { headers })
             .then(res => {
                 if (!res.ok) {
                     throw new Error(`Error fetching project: ${res.status}`);
@@ -126,7 +120,6 @@ function ProjectPage() {
                 return res.json();
             })
             .then(data => {
-                console.log("Project data received:", data);
                 setProject(data);
             })
             .catch(err => {

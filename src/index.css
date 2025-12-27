@@ -1,22 +1,77 @@
-/* CSS Variables */
+/**
+ * index.css - Global Styles with Literary Theme
+ * 
+ * CSS Variables matching the burgundy/cream literary theme
+ * used throughout Plot Twist
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap');
+
+/* ===========================
+    CSS Variables - Literary Theme
+   =========================== */
+
 :root {
-    --bg: #f5ecd7;
-    --card: #ffffff;
-    --text: #0f1724;
-    --muted: #64748b;
-    --accent: #2563eb;
-    --purple: #7c3aed;
-    --purple-dark: #5b21b6;
-    --danger: #ef4444;
-    --radius: 12px;
-    --shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
+    /* Background colors */
+    --bg: #f9f6f0;                    /* Cream background */
+    --bg-dark: #f5efe5;               /* Darker cream */
+    --card: #fefdfb;                  /* Light parchment */
+    --card-hover: #ffffff;            /* White on hover */
+    
+    /* Text colors */
+    --text: #5D2E1F;                  /* Dark burgundy */
+    --text-dark: #3D2914;             /* Darker brown */
+    --text-light: #4A3728;            /* Medium brown */
+    --muted: #8B7355;                 /* Muted brown */
+    
+    /* Accent colors */
+    --accent: #8B4513;                /* Burgundy/Saddle brown */
+    --accent-light: #A0522D;          /* Sienna */
+    --accent-dark: #5D2E1F;           /* Dark burgundy */
+    
+    /* Legacy variable names (for backwards compatibility) */
+    --purple: #8B4513;                /* Map to burgundy */
+    --purple-dark: #5D2E1F;           /* Map to dark burgundy */
+    
+    /* Status colors */
+    --success: #22C55E;               /* Green */
+    --success-bg: #F0FDF4;            /* Light green bg */
+    --danger: #9B2C2C;                /* Dark red */
+    --danger-bg: #FEF2F2;             /* Light red bg */
+    
+    /* Border colors */
+    --border: #D4C4B0;                /* Tan border */
+    --border-light: #E6DED3;          /* Light tan */
+    --border-dark: #8B4513;           /* Burgundy border */
+    
+    /* Layout */
+    --radius: 8px;
+    --radius-sm: 4px;
+    --radius-lg: 12px;
+    --radius-full: 999px;
+    
+    /* Shadows */
+    --shadow: 0 2px 10px rgba(139, 69, 19, 0.08);
+    --shadow-md: 0 4px 20px rgba(139, 69, 19, 0.12);
+    --shadow-lg: 0 8px 30px rgba(139, 69, 19, 0.15);
+    
+    /* Container */
     --container-max: 1100px;
     --gap: 1rem;
-    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    --button-shadow: 0 4px 10px rgba(37, 99, 235, 0.08);
+    
+    /* Typography */
+    --font-heading: 'Playfair Display', Georgia, serif;
+    --font-body: 'Lora', Georgia, serif;
+    --font-sans: 'Lora', Georgia, serif;
+    
+    /* Button */
+    --button-shadow: 0 2px 8px rgba(139, 69, 19, 0.3);
 }
 
-/* Base Styles */
+/* ===========================
+    Base Styles
+   =========================== */
+
 *,
 *::before,
 *::after {
@@ -29,50 +84,124 @@ body,
     height: 100%;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
-    font-family: var(--font-sans);
+    font-family: var(--font-body);
     background: var(--bg);
     color: var(--text);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    line-height: 1.45;
+    line-height: 1.6;
     font-size: 16px;
 }
 
-/* Global Layout */
+/* ===========================
+    Typography
+   =========================== */
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--text);
+    line-height: 1.3;
+}
+
+p {
+    line-height: 1.7;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--accent-light);
+}
+
+/* ===========================
+    Global Layout
+   =========================== */
+
 .app-container {
     max-width: var(--container-max);
     margin: 0 auto;
     padding: 1.25rem;
 }
 
-/* Global Page Wrapper */
 .page-wrap {
     max-width: var(--container-max);
     margin: 0 auto;
     padding: var(--gap);
 }
 
-/* Global Utilities */
+/* ===========================
+    Global Utilities
+   =========================== */
+
 .muted {
     color: var(--muted);
 }
 
-/* Global Accessibility */
+.text-center {
+    text-align: center;
+}
+
+/* ===========================
+    Global Accessibility
+   =========================== */
+
 :focus {
     outline: none;
 }
 
 :focus-visible {
-    outline: 3px solid rgba(37, 99, 235, 0.15);
+    outline: 3px solid rgba(139, 69, 19, 0.2);
     outline-offset: 2px;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
 }
 
-/* Global Responsive */
+/* ===========================
+    Selection
+   =========================== */
+
+::selection {
+    background: rgba(139, 69, 19, 0.2);
+    color: var(--text);
+}
+
+/* ===========================
+    Scrollbar (optional - for webkit browsers)
+   =========================== */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--muted);
+}
+
+/* ===========================
+   Responsive
+   =========================== */
+
 @media (max-width: 640px) {
-    .app-container, .page-wrap {
+    .app-container, 
+    .page-wrap {
         padding: 0.75rem;
     }
 

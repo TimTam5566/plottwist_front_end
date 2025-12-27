@@ -1,23 +1,24 @@
 /**
- * ============================================================
- * POST-PLEDGE.JS - Submit a Contribution to a Project
- * ============================================================
+ * post-pledge.js
  * 
- * WHAT THIS DOES:
- * Creates a new pledge (story/poem contribution) for a project.
+ * This file provides an async function to submit a pledge to the backend API.
  * 
- * WHEN IT'S USED:
- * - PledgeForm component when user submits contribution
+ * Function:
+ * - `postPledge(projectId, pledgeData)`:
+ *    - Sends a POST request to the `/projects/{projectId}/pledges/` endpoint with pledge details.
+ *    - Includes authentication using a token from localStorage.
+ *    - Formats the pledge data (amount, add_content, comment, anonymous) as required by the backend.
+ *    - Handles errors by parsing the response and throwing a detailed error message if the request fails.
+ *    - Returns the parsed JSON response containing the pledge data on success.
  * 
- * API ENDPOINT: POST /projects/{projectId}/pledges/
- * AUTHENTICATION: Required (Token)
- * 
- * PARAMETERS:
- * - projectId: The project to contribute to
- * - pledgeData: Object with { amount, add_content, comment, anonymous }
+ * Linked to:
+ * - Used by the `use-create-pledge` hook and `PledgeForm.jsx` component.
+ * - Allows users to submit pledges to a specific project from the frontend.
+ * - Ensures proper error handling and feedback for pledge submissions.
  */
 
-// Error message constants
+import { API_URL } from "../config";
+
 const ERROR_MESSAGES = {
     PROJECT_REQUIRED: "Project ID is required",
     AUTH_REQUIRED: "Authentication required",
@@ -25,80 +26,48 @@ const ERROR_MESSAGES = {
 };
 
 export default async function postPledge(projectId, pledgeData) {
-    // Validate project ID
     if (!projectId) {
-        throw new Error("Project ID is required");
+        throw new Error(ERROR_MESSAGES.PROJECT_REQUIRED);
     }
-    // Get and validate auth token
+
     const token = localStorage.getItem("token");
     if (!token) {
-        throw new Error("No authentication token found");
+        throw new Error(ERROR_MESSAGES.AUTH_REQUIRED);
     }
 
-    // Build the URL - note the nested route!
-    // POST /projects/5/pledges/ creates a pledge for project 5
-    const url = `${import.meta.env.VITE_API_URL}/projects/${projectId}/pledges/`;
-
-    // Debug logging (helpful for troubleshooting)
-    console.log("Sending pledge request:", {
-        url,
-        projectId,
-        hasToken: !!token,
-        payload: pledgeData
-    });
+    const url = `${API_URL}/projects/${projectId}/pledges/`;
 
     try {
-        // Send POST request
         const response = await fetch(url, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json", // JSON, not FormData (no file upload)
+                "Content-Type": "application/json",
                 "Authorization": `Token ${token}`
             },
             body: JSON.stringify({
-                amount: pledgeData.amount, // Number of paragraphs/verses
-                add_content: pledgeData.add_content, // The actual story content
+                amount: pledgeData.amount,
+                add_content: pledgeData.add_content,
                 comment: pledgeData.comment || `Contributed ${pledgeData.amount} verse(s)`,
-                anonymous: pledgeData.anonymous // Now this actually saves if anon chosen
+                anonymous: pledgeData.anonymous
             })
         });
-        // Debug logging
-        console.log("Pledge response received:", {
-            status: response.status,
-            statusText: response.statusText,
-            ok: response.ok
-        });
-        // Try to parse response
+
         let responseData;
         try {
             responseData = await response.json();
-            console.log("Response data:", responseData);
         } catch (e) {
-            console.log("No JSON response body");
             responseData = null;
         }
-        // Handle errors
+
         if (!response.ok) {
             const errorMessage = responseData?.add_content?.[0] || 
                                 responseData?.detail || 
-                                `Error creating pledge (status ${response.status} ${response.statusText})`;
+                                `Error creating pledge (status ${response.status})`;
             throw new Error(errorMessage);
         }
 
         return responseData;
     } catch (error) {
-        console.error("Pledge API error:", error);
         throw error;
     }
 }
-
-/**
- * WHAT HAPPENS AFTER THIS SUCCEEDS:
- * 
- * 1. Backend saves the pledge to database
- * 2. Django SIGNAL fires (post_save on Pledge)
- * 3. Signal appends add_content to project.starting_content
- * 4. Project is automatically updated!
- * 5. Response sent back to frontend
- * 6. Frontend can refresh to show new content
- */

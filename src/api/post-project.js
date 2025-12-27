@@ -1,115 +1,107 @@
 /**
  * ============================================================
- * POST-PROJECT.JS - Create a New Project
+ * POST-PROJECT.JS - Create Project API Function
  * ============================================================
  * 
  * WHAT THIS DOES:
- * Creates a new project/story in the database.
+ * Pure API function that sends a POST request to create a new project.
+ * Uses FormData to support image uploads.
  * 
- * WHEN IT'S USED:
- * - CreateProjectPage form submission
+ * RETURNS:
+ * - Success: Project data from API
+ * - Failure: Throws error with message
  * 
- * API ENDPOINT: POST /projects/
- * AUTHENTICATION: Required (Token)
- * 
- * PARAMETERS:
- * - projectData: Object with project details
- * - authToken: User's authentication token
- * - userId: ID of the user creating the project
+ * USED BY:
+ * - use-create-project.js hook (recommended)
+ * - Can be called directly if needed
  */
 
-import { useAuth } from "../hooks/use-auth";
+import { API_URL } from "../config";
 
 async function postProject(projectData, authToken, userId) {
-    const url = `${import.meta.env.VITE_API_URL}/projects/`;
+    const url = `${API_URL}/projects/`;
     
-    // Validate authentication
+    // ============================================================
+    // VALIDATE AUTH
+    // ============================================================
     if (!authToken || !userId) {
-        throw new Error('Authentication required');
+        throw new Error("Authentication required");
     }
-    
-    // Convert userId to number (it might be a string from localStorage)
+
     const ownerId = Number(userId);
-    
     if (isNaN(ownerId)) {
-        throw new Error('Invalid user ID format');
+        throw new Error("Invalid user ID format");
     }
 
     // ============================================================
-    // FORMDATA - Required for file uploads!
+    // BUILD FORMDATA (supports file uploads)
     // ============================================================
-    /**
-     * WHY FORMDATA INSTEAD OF JSON?
-     * 
-     * JSON.stringify() can't handle files (images).
-     * FormData can send both text AND files in one request.
-     * 
-     * The browser automatically sets:
-     * Content-Type: multipart/form-data; boundary=----WebKitFormBoundary...
-     * 
-     * DON'T manually set Content-Type with FormData - it breaks the boundary!
-     */
     const formData = new FormData();
+    
+    // Required fields
     formData.append("title", projectData.title);
     formData.append("description", projectData.description);
     formData.append("goal", projectData.goal);
     formData.append("genre", projectData.genre);
+    formData.append("content_type", projectData.content_type);
     formData.append("owner", ownerId);
-    formData.append("starting_content", projectData.startingVerseParagraph || "");
     formData.append("is_open", true);
-
-    // Only append image if one was selected
+    
+    // Content fields
+    if (projectData.starting_content) {
+        formData.append("starting_content", projectData.starting_content);
+    }
+    if (projectData.current_content) {
+        formData.append("current_content", projectData.current_content);
+    }
+    
+    // Image file (if provided)
     if (projectData.image) {
         formData.append("image", projectData.image);
     }
-    // Send the request
+
+    // ============================================================
+    // SEND REQUEST
+    // ============================================================
     const response = await fetch(url, {
         method: "POST",
         headers: {
+            // Note: Don't set Content-Type for FormData - browser sets it automatically
             Authorization: `Token ${authToken}`,
-            // NO Content-Type header! Browser sets it automatically for FormData
         },
         body: formData,
     });
-    // Error handling
+
+    // ============================================================
+    // HANDLE RESPONSE
+    // ============================================================
     if (!response.ok) {
         const fallbackError = `HTTP ${response.status}: Error creating project`;
 
         try {
             const responseText = await response.text();
-            console.log("Server error response:", responseText);
-
+            
             let data;
             try {
                 data = JSON.parse(responseText);
             } catch {
                 const error = new Error(responseText || fallbackError);
-                error.response = {
-                    status: response.status,
-                    statusText: response.statusText,
-                    data: { detail: responseText },
-                };
+                error.status = response.status;
                 throw error;
             }
 
             const error = new Error(data?.detail || fallbackError);
-            error.response = {
-                status: response.status,
-                statusText: response.statusText,
-                data: data,
-            };
+            error.status = response.status;
+            error.data = data;
             throw error;
-        } catch (networkError) {
+        } catch (err) {
+            if (err.status) throw err; // Re-throw if already formatted
             const error = new Error(fallbackError);
-            error.response = {
-                status: response.status,
-                statusText: response.statusText,
-                data: null,
-            };
+            error.status = response.status;
             throw error;
         }
     }
-    // Success! Return the created project
+
     return await response.json();
 }
 

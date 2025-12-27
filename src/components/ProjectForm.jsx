@@ -1,38 +1,29 @@
 /**
- * ProjectForm.jsx - Literary Theme
+ * ============================================================
+ * PROJECTFORM.JSX - Create New Project Form
+ * ============================================================
  * 
- * Form for creating new stories/poems with Plot Twist literary styling
+ * Literary-themed form for creating new stories/poems.
+ * Uses useCreateProject hook for consistent pattern with PledgeForm.
+ * Supports image uploads via FormData.
  */
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useCreateProject from "../hooks/use-create-project";
-import postProject from "../api/post-project";
 import "./ProjectForm.css";
 import { useAuth } from "../hooks/use-auth";
-import { useProject } from "../hooks/use-project";
 
-function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData }) {
-    const { project, setProject } = useProject(projectId);
-    
-    console.log('ProjectForm mounted:', { 
-        projectId, 
-        initialData,
-        hasProject: Boolean(project),
-        projectData: project
-    });
-
-    useEffect(() => {
-        console.log('Project data updated:', {
-            projectId,
-            project,
-            initialData
-        });
-    }, [projectId, project, initialData]);
-
+function ProjectForm({ onSuccess, initialData }) {
+    // ============================================================
+    // HOOKS
+    // ============================================================
     const { auth } = useAuth();
     const navigate = useNavigate();
-    const [error, setError] = useState("");
+    const { createProject, isLoading, error: submitError, success } = useCreateProject();
+
+    // ============================================================
+    // STATE
+    // ============================================================
     const [validationErrors, setValidationErrors] = useState({});
     const [formData, setFormData] = useState(initialData || {
         title: "",
@@ -43,13 +34,14 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
         current_content: "",
         goal: "",
         is_open: true,
-        date_created: new Date().toISOString()
     });
     
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(initialData?.image || null);
-    const { createProject, isLoading } = useCreateProject();
 
+    // ============================================================
+    // VALIDATION
+    // ============================================================
     const validateForm = (data) => {
         const errors = {};
         
@@ -90,6 +82,9 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
         return errors;
     };
 
+    // ============================================================
+    // HANDLERS
+    // ============================================================
     const handleChange = (e) => {
         const { id, type, checked, files } = e.target;
         
@@ -105,6 +100,7 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
             }));
         }
 
+        // Clear validation error when field is edited
         if (validationErrors[id]) {
             setValidationErrors(prev => {
                 const newErrors = { ...prev };
@@ -116,12 +112,8 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Submitting project with data:', {
-            formData,
-            auth,
-            projectId
-        });
 
+        // Validate
         const errors = validateForm(formData);
         if (Object.keys(errors).length > 0) {
             setValidationErrors(errors);
@@ -129,23 +121,29 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
         }
 
         try {
-            const response = await postProject(
+            // Use the hook to create project (includes image)
+            const response = await createProject(
                 { ...formData, image: imageFile },
                 auth.token,
                 auth.user_id
             );
 
             if (response?.id) {
+                onSuccess?.();
                 navigate(`/project/${response.id}`);
             }
-
         } catch (err) {
-            setError("Alas! The magical quill has run dry. Our story stumbled on its way to the library. Perhaps Mercury is in retrograde, or the muse is taking a coffee break. Let's try that again, shall we?");
+            // Error is handled by the hook and available via submitError
             console.error("Form submission error:", err);
         }
     };
 
-    React.useEffect(() => {
+    // ============================================================
+    // EFFECTS
+    // ============================================================
+    
+    // Cleanup image preview URL on unmount
+    useEffect(() => {
         return () => {
             if (imagePreview && !initialData?.image) {
                 URL.revokeObjectURL(imagePreview);
@@ -153,6 +151,9 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
         };
     }, [imagePreview, initialData]);
 
+    // ============================================================
+    // HELPERS
+    // ============================================================
     const formatContent = (content) => {
         return content.split(/\n\n+/).map((paragraph, index) => (
             <p key={index}>{paragraph.trim()}</p>
@@ -170,6 +171,9 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
         return Math.min(percentage, 100);
     };
 
+    // ============================================================
+    // RENDER
+    // ============================================================
     return (
         <div className="project-form-wrapper">
             <form onSubmit={handleSubmit} className="project-form" encType="multipart/form-data">
@@ -179,10 +183,18 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
                     <p className="form-subtitle">Every great story starts with a single word...</p>
                 </div>
 
-                {error && (
+                {/* API Error from hook */}
+                {submitError && (
                     <div className="error-message api-error">
                         <span className="error-icon">📜</span>
-                        <p>{error}</p>
+                        <p>Alas! The magical quill has run dry. {submitError}</p>
+                    </div>
+                )}
+
+                {/* Success message */}
+                {success && (
+                    <div className="success-message">
+                        <p>✨ Your tale has been published to the library!</p>
                     </div>
                 )}
 
