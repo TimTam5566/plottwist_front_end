@@ -1,6 +1,17 @@
+/**
+ * ============================================================
+ * GET-PROJECTS.JS - Fetch All Projects
+ * ============================================================
+ * 
+ * Fetches all projects from the API.
+ * 
+ * USED BY: use-projects.js hook
+ */
+import { API_URL } from "../config";
+
 async function getProjects() {
-    // First we create the URL for the request by using the Vite environment variable and the API endpoint.
-    const url = `${import.meta.env.VITE_API_URL}/projects`;
+    // First we create the URL for the request by combining the base API URL with the endpoint for projects.
+    const url = `${API_URL}/projects`;
 
     // Next we call the fetch function and pass in the url and the method. The method is set to `GET` because we are fetching data. Fetch returns a "promise".
     // If the promise "resolves" (i.e., if the back end responds) we will get the data we need in the `response` variable. If the back end fails to respond then we'll get an error.
@@ -10,7 +21,7 @@ async function getProjects() {
     // If the request was not successful then we will throw an error...
     if (!response.ok) {
         const fallbackError = 
-            "the page turned, but the ink did not follow" + 
+            "The page turned, but the ink did not follow" + 
             "No pledges appear, though we called them by name. " +
             "Perhaps they are wandering — lost in the margins, " +
             "or caught between commas in the cloud. Try again soon, " +

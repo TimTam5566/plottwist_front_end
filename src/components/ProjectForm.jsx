@@ -7,7 +7,6 @@
  * Uses useCreateProject hook for consistent pattern with PledgeForm.
  * Supports image uploads via FormData.
  */
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useCreateProject from "../hooks/use-create-project";
