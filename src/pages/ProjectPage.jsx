@@ -52,7 +52,7 @@ function ProjectPage() {
     const formatVerses = (content) => {
         if (!content) return null;
         
-        const lines = content.split(/\n/).filter(line => line.trim());
+        const lines = content.split(/\n+/).filter(line => line.trim());
         
         return lines.map((line, index) => (
             <p key={index} className="content-verse">
