@@ -36,15 +36,16 @@ function ProjectPage() {
 
     // Format content into paragraphs
     const formatContent = (content) => {
-        if (!content) return null;
-        
-        const paragraphs = content.split(/\n\n+/).filter(p => p.trim());
-        
-        return paragraphs.map((paragraph, index) => (
-            <p key={index} className="content-paragraph">
-                {paragraph.trim()}
-            </p>
-        ));
+    if (!content) return null;
+    
+    // Split on double newline OR single newline
+    const paragraphs = content.split(/\n+/).filter(p => p.trim());
+    
+    return paragraphs.map((paragraph, index) => (
+        <p key={index} className="content-paragraph">
+            {paragraph.trim()}
+        </p>
+    ));
     };
 
     // Format verses (for poems - split by single newline)
