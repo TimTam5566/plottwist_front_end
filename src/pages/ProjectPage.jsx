@@ -260,7 +260,7 @@ function ProjectPage() {
                                                 <p className="contribution-author">
                                                     — {pledge.anonymous 
                                                         ? 'A Mysterious Stranger' 
-                                                        : (pledge.pledger?.username || 'Anonymous')}
+                                                        : (pledge.supporter_username || 'A Contributor')}
                                                 </p>
                                             </div>
                                         ))}
