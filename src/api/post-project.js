@@ -1,91 +1,103 @@
 /**
- * post-project.js
+ * ============================================================
+ * POST-PROJECT.JS - Create Project API Function
+ * ============================================================
  * 
- * This file provides an async function to create a new project (fundraiser) via the backend API.
+ * WHAT THIS DOES:
+ * Pure API function that sends a POST request to create a new project.
+ * Uses FormData to support image uploads.
  * 
- * Function:
- * - `postProject(projectData, authToken, userId)`:
- *    - Sends a POST request to the `/projects/` endpoint with the provided project details.
- *    - Uses FormData to handle both text fields and image uploads.
- *    - Requires authentication (`authToken`) and a valid user ID (`userId`).
- *    - Handles errors by parsing the server response and throwing a detailed error message if the request fails.
- *    - Returns the parsed JSON response containing the created project data on success.
+ * RETURNS:
+ * - Success: Project data from API
+ * - Failure: Throws error with message
  * 
- * Linked to:
- * - Used by project creation forms/components (e.g., `ProjectForm.jsx`).
- * - Allows authenticated users to create new projects from the frontend.
- * - Ensures proper error handling and feedback for project creation.
+ * USED BY:
+ * - use-create-project.js hook (recommended)
+ * - Can be called directly if needed
  */
-import { useAuth } from "../hooks/use-auth";
+
+import { API_URL } from "../config";
 
 async function postProject(projectData, authToken, userId) {
-    const url = `${import.meta.env.VITE_API_URL}/projects/`;
+    const url = `${API_URL}/projects/`;
     
+    // ============================================================
+    // VALIDATE AUTH
+    // ============================================================
     if (!authToken || !userId) {
-        throw new Error('Authentication required');
+        throw new Error("Authentication required");
     }
 
     const ownerId = Number(userId);
-    
     if (isNaN(ownerId)) {
-        throw new Error('Invalid user ID format');
+        throw new Error("Invalid user ID format");
     }
 
+    // ============================================================
+    // BUILD FORMDATA (supports file uploads)
+    // ============================================================
     const formData = new FormData();
+    
+    // Required fields
     formData.append("title", projectData.title);
     formData.append("description", projectData.description);
     formData.append("goal", projectData.goal);
     formData.append("genre", projectData.genre);
+    formData.append("content_type", projectData.content_type);
     formData.append("owner", ownerId);
-    formData.append("starting_content", projectData.startingVerseParagraph || "");
     formData.append("is_open", true);
-
+    
+    // Content fields
+    if (projectData.starting_content) {
+        formData.append("starting_content", projectData.starting_content);
+    }
+    if (projectData.current_content) {
+        formData.append("current_content", projectData.current_content);
+    }
+    
+    // Image file (if provided)
     if (projectData.image) {
         formData.append("image", projectData.image);
     }
 
+    // ============================================================
+    // SEND REQUEST
+    // ============================================================
     const response = await fetch(url, {
         method: "POST",
         headers: {
+            // Note: Don't set Content-Type for FormData - browser sets it automatically
             Authorization: `Token ${authToken}`,
         },
         body: formData,
     });
 
+    // ============================================================
+    // HANDLE RESPONSE
+    // ============================================================
     if (!response.ok) {
         const fallbackError = `HTTP ${response.status}: Error creating project`;
 
         try {
             const responseText = await response.text();
-            console.log("Server error response:", responseText);
-
+            
             let data;
             try {
                 data = JSON.parse(responseText);
             } catch {
                 const error = new Error(responseText || fallbackError);
-                error.response = {
-                    status: response.status,
-                    statusText: response.statusText,
-                    data: { detail: responseText },
-                };
+                error.status = response.status;
                 throw error;
             }
 
             const error = new Error(data?.detail || fallbackError);
-            error.response = {
-                status: response.status,
-                statusText: response.statusText,
-                data: data,
-            };
+            error.status = response.status;
+            error.data = data;
             throw error;
-        } catch (networkError) {
+        } catch (err) {
+            if (err.status) throw err; // Re-throw if already formatted
             const error = new Error(fallbackError);
-            error.response = {
-                status: response.status,
-                statusText: response.statusText,
-                data: null,
-            };
+            error.status = response.status;
             throw error;
         }
     }
