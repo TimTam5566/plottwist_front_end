@@ -130,7 +130,7 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
 
         try {
             const response = await postProject(
-                formData,
+                { ...formData, image: imageFile },
                 auth.token,
                 auth.user_id
             );
@@ -363,12 +363,6 @@ function ProjectForm({ onSuccess, projectId, isOwner, isEditMode, initialData })
                             "Publish Your Tale"
                         )}
                     </button>
-
-                    {isEditMode && isOwner && (
-                        <button type="button" className="btn btn--secondary" onClick={handleEdit}>
-                            Edit Project
-                        </button>
-                    )}
                 </div>
 
                 <p className="form-footer">

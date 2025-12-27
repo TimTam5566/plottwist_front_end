@@ -1,36 +1,54 @@
 /**
- * post-project.js
+ * ============================================================
+ * POST-PROJECT.JS - Create a New Project
+ * ============================================================
  * 
- * This file provides an async function to create a new project (fundraiser) via the backend API.
+ * WHAT THIS DOES:
+ * Creates a new project/story in the database.
  * 
- * Function:
- * - `postProject(projectData, authToken, userId)`:
- *    - Sends a POST request to the `/projects/` endpoint with the provided project details.
- *    - Uses FormData to handle both text fields and image uploads.
- *    - Requires authentication (`authToken`) and a valid user ID (`userId`).
- *    - Handles errors by parsing the server response and throwing a detailed error message if the request fails.
- *    - Returns the parsed JSON response containing the created project data on success.
+ * WHEN IT'S USED:
+ * - CreateProjectPage form submission
  * 
- * Linked to:
- * - Used by project creation forms/components (e.g., `ProjectForm.jsx`).
- * - Allows authenticated users to create new projects from the frontend.
- * - Ensures proper error handling and feedback for project creation.
+ * API ENDPOINT: POST /projects/
+ * AUTHENTICATION: Required (Token)
+ * 
+ * PARAMETERS:
+ * - projectData: Object with project details
+ * - authToken: User's authentication token
+ * - userId: ID of the user creating the project
  */
+
 import { useAuth } from "../hooks/use-auth";
 
 async function postProject(projectData, authToken, userId) {
     const url = `${import.meta.env.VITE_API_URL}/projects/`;
     
+    // Validate authentication
     if (!authToken || !userId) {
         throw new Error('Authentication required');
     }
-
+    
+    // Convert userId to number (it might be a string from localStorage)
     const ownerId = Number(userId);
     
     if (isNaN(ownerId)) {
         throw new Error('Invalid user ID format');
     }
 
+    // ============================================================
+    // FORMDATA - Required for file uploads!
+    // ============================================================
+    /**
+     * WHY FORMDATA INSTEAD OF JSON?
+     * 
+     * JSON.stringify() can't handle files (images).
+     * FormData can send both text AND files in one request.
+     * 
+     * The browser automatically sets:
+     * Content-Type: multipart/form-data; boundary=----WebKitFormBoundary...
+     * 
+     * DON'T manually set Content-Type with FormData - it breaks the boundary!
+     */
     const formData = new FormData();
     formData.append("title", projectData.title);
     formData.append("description", projectData.description);
@@ -40,18 +58,20 @@ async function postProject(projectData, authToken, userId) {
     formData.append("starting_content", projectData.startingVerseParagraph || "");
     formData.append("is_open", true);
 
+    // Only append image if one was selected
     if (projectData.image) {
         formData.append("image", projectData.image);
     }
-
+    // Send the request
     const response = await fetch(url, {
         method: "POST",
         headers: {
             Authorization: `Token ${authToken}`,
+            // NO Content-Type header! Browser sets it automatically for FormData
         },
         body: formData,
     });
-
+    // Error handling
     if (!response.ok) {
         const fallbackError = `HTTP ${response.status}: Error creating project`;
 
@@ -89,7 +109,7 @@ async function postProject(projectData, authToken, userId) {
             throw error;
         }
     }
-
+    // Success! Return the created project
     return await response.json();
 }
 

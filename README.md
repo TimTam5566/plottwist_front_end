@@ -1,70 +1,86 @@
-# plottwist_front_end
-Javascript/React final project front end
-React Project: Crowdfunding App (Part 2)
-Due: Last Sunday of the module at 11:59pm.
-Project Description
-Kickstarter, Go Fund Me, Kiva, Change.org, Patreon… All of these different websites have something in common: they provide a platform for people to create fundraisers that they believe in, but they all have a slightly different approach. You are going to create your own crowdfunding website (this time the front-end), and put your own spin on it!
+┌─────────────────────────────────────────────────────────────────────┐
+│                         FRONTEND STRUCTURE                          │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  main.jsx                                                           │
+│  └── Entry point - sets up routing & AuthProvider                   │
+│                                                                     │
+│  config.js                                                          │
+│  └── Stores API URL from environment variables                      │
+│                                                                     │
+│  api/                                                               │
+│  ├── _helpers.js      → Auth header helper                          │
+│  ├── get-projects.js  → Fetch all projects                          │
+│  ├── get-project.js   → Fetch single project                        │
+│  ├── post-project.js  → Create new project                          │
+│  ├── put-project.js   → Update existing project                     │
+│  ├── post-pledge.js   → Create pledge (contribution)                │
+│  ├── post-login.js    → User login                                  │
+│  └── post-signup.js   → User registration                           │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
 
-Project Requirements
+FRONT END API - USER PLEDGE
+## 🔄 How It All Connects
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        DATA FLOW EXAMPLE                            │
+│                     (User adds a contribution)                      │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  1. User on ProjectPage clicks "Add Contribution"                   │
+│                    │                                                │
+│                    ▼                                                │
+│  2. PledgeForm component renders                                    │
+│     - User fills in content, amount, anonymous checkbox             │
+│     - User clicks Submit                                            │
+│                    │                                                │
+│                    ▼                                                │
+│  3. Form calls postPledge(projectId, pledgeData)                    │
+│                    │                                                │
+│                    ▼                                                │
+│  4. postPledge sends POST request to /projects/5/pledges/           │
+│     - Includes Token in Authorization header                        │
+│     - Sends JSON body with content                                  │
+│                    │                                                │
+│                    ▼                                                │
+│  5. Django receives request                                         │
+│     - views.py validates & saves pledge                             │
+│     - signals.py auto-updates project content                       │
+│     - Returns success response                                      │
+│                    │                                                │
+│                    ▼                                                │
+│  6. Frontend receives response                                      │
+│     - Updates UI / refreshes page                                   │
+│     - User sees their contribution added!                           │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
 
- Be separated into two distinct projects: an API built using the Django Rest Framework and a website built using React.
- 
- Have a cool name, bonus points if it includes a pun and/or missing vowels. See https://namelix.com/ for inspiration. (Bonus Points are meaningless)
- 
- Have a clear target audience.
- 
- Have user accounts. A user should have at least the following attributes:
- 
-    -   Username (done)
-    -   Email address (done)
-    -   Password (done)
- 
- Ability to create a “fundraiser” to be crowdfunded which will include at least the following attributes:
-    -   Title (done)
-    -   Owner (a user)
-    -   Description (done)
-    -   Image (done)
-    -   Target amount to raise (done)
-    -   Whether it is currently open to accepting new supporters or not (done)
-    -   When the fundraiser was created (done)
- 
- Ability to “pledge” to a fundraiser. A pledge should include at least the following attributes:
-    -   An amount (done)
-    -   The fundraiser the pledge is for (done)
-    -   The supporter/user (i.e. who created the pledge) (done)
-    -   Whether the pledge is anonymous or not (done)
-    -   A comment to go along with the pledge (done)
- 
- Implement suitable update/delete functionality, e.g. should a fundraiser owner be allowed to update its description?(done)
- 
- Implement suitable permissions, e.g. who is allowed to delete a pledge?  (done)
+## 🔄 How These Components Connect
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                      COMPONENT HIERARCHY                            │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  main.jsx                                                           │
+│  └── <AuthProvider>           ← Wraps everything                    │
+│      └── <RouterProvider>     ← Handles routing                     │
+│          └── <NavBar>         ← Always visible                      │
+│              └── <Outlet>     ← Current page renders here           │
+│                  │                                                  │
+│                  ├── <HomePage>                                     │
+│                  │   ├── <WelcomeScroll>                            │
+│                  │   ├── <FeaturedProjectCard>                      │
+│                  │   └── <ProjectCard> (multiple)                   │
+│                  │                                                  │
+│                  ├── <ProjectPage>                                  │
+│                  │   ├── Project details                            │
+│                  │   └── <PledgeForm>                               │
+│                  │                                                  │
+│                  ├── <LoginPage>                                    │
+│                  ├── <SignupPage>                                   │
+│                  └── etc...                                         │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
 
- Return the relevant status codes for both successful and unsuccessful requests to the API. CHECK
 
- Handle failed requests gracefully (e.g. you should have a custom 404 page rather than the default error page). CHECK
-
- Use Token Authentication, including an endpoint to obtain a token along with the current user's details. (done)
-
- Implement responsive design. (CHECK)
-
-Additional Notes
-No additional libraries or frameworks, other than what we use in class, are allowed unless approved by the Lead Mentor.
-
-Note that while this is a crowdfunding website, actual money transactions are out of scope for this project.
-
-Submission
-To submit, fill out this Google form, including a link to your Github repo. Your lead mentor will respond with any feedback they can offer, and you can approach the mentoring team if you would like help to make improvements based on this feedback!
-
-Please include the following in your readme doc:
-
- A link to the deployed project.
- 
-    -   A screenshot of the homepage
-         public/images/home_page.jpg
-    -   A screenshot of the fundraiser creation page
-         public/images/create_projects_page.png
-    -   A screenshot of the fundraiser creation form
-         public/images/create_projects_page.png
-    -   A screenshot of a fundraiser with pledges
-         public/images/project_with _pledges.png
-    -   A screenshot of the resulting page when an unauthorized user attempts to edit a fundraiser     (optional, depending on whether or not this functionality makes sense in your app!) The edit (button) feature only appears when the authorised user is logged in. 

@@ -1,22 +1,23 @@
 /**
- * post-pledge.js
+ * ============================================================
+ * POST-PLEDGE.JS - Submit a Contribution to a Project
+ * ============================================================
  * 
- * This file provides an async function to submit a pledge to the backend API.
+ * WHAT THIS DOES:
+ * Creates a new pledge (story/poem contribution) for a project.
  * 
- * Function:
- * - `postPledge(projectId, pledgeData)`:
- *    - Sends a POST request to the `/projects/{projectId}/pledges/` endpoint with pledge details.
- *    - Includes authentication using a token from localStorage.
- *    - Formats the pledge data (amount, add_content, comment, anonymous) as required by the backend.
- *    - Handles errors by parsing the response and throwing a detailed error message if the request fails.
- *    - Returns the parsed JSON response containing the pledge data on success.
+ * WHEN IT'S USED:
+ * - PledgeForm component when user submits contribution
  * 
- * Linked to:
- * - Used by the `use-create-pledge` hook and `PledgeForm.jsx` component.
- * - Allows users to submit pledges to a specific project from the frontend.
- * - Ensures proper error handling and feedback for pledge submissions.
+ * API ENDPOINT: POST /projects/{projectId}/pledges/
+ * AUTHENTICATION: Required (Token)
+ * 
+ * PARAMETERS:
+ * - projectId: The project to contribute to
+ * - pledgeData: Object with { amount, add_content, comment, anonymous }
  */
 
+// Error message constants
 const ERROR_MESSAGES = {
     PROJECT_REQUIRED: "Project ID is required",
     AUTH_REQUIRED: "Authentication required",
@@ -24,18 +25,21 @@ const ERROR_MESSAGES = {
 };
 
 export default async function postPledge(projectId, pledgeData) {
+    // Validate project ID
     if (!projectId) {
         throw new Error("Project ID is required");
     }
-
+    // Get and validate auth token
     const token = localStorage.getItem("token");
     if (!token) {
         throw new Error("No authentication token found");
     }
 
-    // Use correct URL format
+    // Build the URL - note the nested route!
+    // POST /projects/5/pledges/ creates a pledge for project 5
     const url = `${import.meta.env.VITE_API_URL}/projects/${projectId}/pledges/`;
 
+    // Debug logging (helpful for troubleshooting)
     console.log("Sending pledge request:", {
         url,
         projectId,
@@ -44,26 +48,27 @@ export default async function postPledge(projectId, pledgeData) {
     });
 
     try {
+        // Send POST request
         const response = await fetch(url, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/json", // JSON, not FormData (no file upload)
                 "Authorization": `Token ${token}`
             },
             body: JSON.stringify({
-                amount: pledgeData.amount,
-                add_content: pledgeData.add_content,
+                amount: pledgeData.amount, // Number of paragraphs/verses
+                add_content: pledgeData.add_content, // The actual story content
                 comment: pledgeData.comment || `Contributed ${pledgeData.amount} verse(s)`,
-                anonymous: pledgeData.anonymous
+                anonymous: pledgeData.anonymous // Now this actually saves if anon chosen
             })
         });
-
+        // Debug logging
         console.log("Pledge response received:", {
             status: response.status,
             statusText: response.statusText,
             ok: response.ok
         });
-
+        // Try to parse response
         let responseData;
         try {
             responseData = await response.json();
@@ -72,7 +77,7 @@ export default async function postPledge(projectId, pledgeData) {
             console.log("No JSON response body");
             responseData = null;
         }
-
+        // Handle errors
         if (!response.ok) {
             const errorMessage = responseData?.add_content?.[0] || 
                                 responseData?.detail || 
@@ -87,3 +92,13 @@ export default async function postPledge(projectId, pledgeData) {
     }
 }
 
+/**
+ * WHAT HAPPENS AFTER THIS SUCCEEDS:
+ * 
+ * 1. Backend saves the pledge to database
+ * 2. Django SIGNAL fires (post_save on Pledge)
+ * 3. Signal appends add_content to project.starting_content
+ * 4. Project is automatically updated!
+ * 5. Response sent back to frontend
+ * 6. Frontend can refresh to show new content
+ */

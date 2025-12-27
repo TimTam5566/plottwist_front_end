@@ -1,3 +1,17 @@
+/** ============================================================
+ * USE-CREATE-PROJECT.JS - Create New Project Hook
+ * ============================================================
+ * 
+ * WHAT THIS DOES:
+ * Handles creating a new project with loading/error/success states.
+ * 
+ * RETURNS:
+ * - createProject(projectData): Async function to create project
+ * - isLoading: Boolean - is submission in progress?
+ * - error: Error message or null
+ * - success: Boolean - did creation succeed?
+ */
+
 import { useState } from "react";
 
 import { API_URL } from "../config";

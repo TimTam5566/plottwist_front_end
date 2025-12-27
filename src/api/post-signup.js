@@ -1,22 +1,22 @@
 /**
- * post-signup.js
+ * ============================================================
+ * POST-SIGNUP.JS - Register New User
+ * ============================================================
  * 
- * This file provides an async function to register a new user via the backend API.
+ * WHAT THIS DOES:
+ * Creates a new user account in the database.
  * 
- * Function:
- * - `postSignup({ username, password, email, first_name, last_name })`:
- *    - Sends a POST request to the `/users/` endpoint with the provided user details.
- *    - Formats the request as JSON and includes all required fields for user registration.
- *    - Handles errors by parsing the server response and throwing a detailed error message if signup fails.
- *    - Returns the parsed JSON response containing the new user's data on success.
+ * WHEN IT'S USED:
+ * - SignupPage form submission
  * 
- * Linked to:
- * - Used by signup forms/components (e.g., `SignupForm.jsx`).
- * - Allows new users to register from the frontend.
- * - Ensures proper error handling and feedback for user registration.
+ * API ENDPOINT: POST /users/
+ * AUTHENTICATION: Not required (creating new account)
+ * 
+ * PARAMETERS:
+ * - username, password, email, first_name, last_name
  */
 async function postSignup({ username, password, email, first_name, last_name }) {
-    // Update the endpoint below to match your backend's actual signup endpoint!
+    
     const url = `${import.meta.env.VITE_API_URL}/users/`;
 
     try {
@@ -25,7 +25,13 @@ async function postSignup({ username, password, email, first_name, last_name }) 
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ username, password, email, first_name, last_name }),
+            body: JSON.stringify({ 
+                username, 
+                password,  // Backend will hash this!
+                email, 
+                first_name, 
+                last_name 
+            }),
         });
 
         const data = await response.json();
@@ -42,3 +48,11 @@ async function postSignup({ username, password, email, first_name, last_name }) 
 }
 
 export default postSignup;
+
+/**
+ * AFTER SIGNUP SUCCESS:
+ * 
+ * User is created but NOT logged in.
+ * The calling code typically redirects to /login
+ * so user can authenticate and get their token.
+ */

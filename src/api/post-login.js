@@ -1,24 +1,36 @@
 /**
- * postLogin.js
+ * ============================================================
+ * POST-LOGIN.JS - Authenticate User
+ * ============================================================
  * 
- * This file provides an async function to handle user login via the backend API.
+ * WHAT THIS DOES:
+ * Sends username/password to backend and receives an auth token.
  * 
- * Function:
- * - `postLogin(username, password)`: 
- *    - Sends a POST request to the `/api-token-auth/` endpoint with the provided username and password.
- *    - Uses the `withAuthHeaders` helper to include authentication headers if available.
- *    - Handles errors by parsing the response and throwing a detailed error message if login fails.
- *    - Returns the parsed JSON response containing authentication data (such as token) on success.
+ * WHEN IT'S USED:
+ * - LoginPage form submission
  * 
- * Linked to:
- * - Used by login forms or authentication logic in your frontend (e.g., LoginPage, AuthProvider).
- * - Allows your app to authenticate users and receive a token for subsequent authenticated API requests.
+ * API ENDPOINT: POST /api-token-auth/
+ * AUTHENTICATION: Not required (this IS the authentication!)
+ * 
+ * PARAMETERS:
+ * - username: User's username
+ * - password: User's password
+ * 
+ * RETURNS:
+ * {
+ *   "token": "abc123...",
+ *   "user_id": 1,
+ *   "email": "user@examp.com"
+ * }
  */
+
 
 async function postLogin(username, password) {
     const url = `${import.meta.env.VITE_API_URL}/api-token-auth/`;
+    // Import helper (could also be at top of file)
     const { withAuthHeaders } = await import('./_helpers.js');
     const headers = withAuthHeaders({ 'Content-Type': 'application/json' });
+    // Send login request
     const response = await fetch(url, {
         method: "POST",
         headers,
@@ -27,7 +39,7 @@ async function postLogin(username, password) {
         "password": password,
         }),
     });
-
+    // Handle errors
     if (!response.ok) {
         const fallbackError = `Error trying to login`;
 
@@ -38,8 +50,19 @@ async function postLogin(username, password) {
         const errorMessage = data?.detail ?? fallbackError;
         throw new Error(errorMessage);
     }
-
+    // Return token and user info
     return await response.json();
 }
 
 export default postLogin;
+/**
+ * AFTER LOGIN SUCCESS:
+ * 
+ * The calling code (AuthProvider) typically does:
+ * 
+ * const data = await postLogin(username, password);
+ * localStorage.setItem("token", data.token);
+ * localStorage.setItem("userId", data.user_id);
+ * 
+ * Now all future API calls can include the token!
+ */

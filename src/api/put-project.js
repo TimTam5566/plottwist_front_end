@@ -1,35 +1,37 @@
 /**
- * put-project.js
+ * ============================================================
+ * PUT-PROJECT.JS - Update an Existing Project
+ * ============================================================
  * 
- * This file provides an async function to update an existing project (fundraiser) via the backend API.
+ * WHAT THIS DOES:
+ * Updates a project with new data (title, description, image, etc.)
  * 
- * Function:
- * - `putProject(id, formData)`:
- *    - Sends a PUT request to the `/projects/{id}/` endpoint with the updated project details.
- *    - Uses FormData to handle both text fields and image uploads.
- *    - Includes authentication using a token from localStorage.
- *    - Handles errors by parsing the server response and throwing a detailed error message if the request fails.
- *    - Returns the parsed JSON response containing the updated project data on success.
+ * WHEN IT'S USED:
+ * - EditProject page form submission
  * 
- * Linked to:
- * - Used by project editing forms/components (e.g., `ProjectForm.jsx` in edit mode).
- * - Allows authenticated users to update existing projects from the frontend.
- * - Ensures proper error handling and feedback for project updates.
+ * API ENDPOINT: PUT /projects/{id}/
+ * AUTHENTICATION: Required (Token) + Must be project owner
+ * 
+ * PARAMETERS:
+ * - id: Project ID to update
+ * - formData: FormData object with updated fields
  */
 import { API_URL } from "../config";
 
 async function putProject(id, formData) {
+    // Get token from localStorage
     const token = localStorage.getItem("token");
-    
+
+    // Send PUT request
     const response = await fetch(`${API_URL}/projects/${id}/`, {
         method: "PUT",
         headers: {
             Authorization: `Token ${token}`,
-            // Do not set Content-Type - browser will set it automatically for FormData
+            // NO Content-Type for FormData - browser sets it automatically
         },
         body: formData
     });
-
+    // Handle errors
     if (!response.ok) {
         const data = await response.json();
         throw new Error(data.detail || "The ink refused to flow. Your edits remain trapped in the margins — try again, brave scribe!");
@@ -39,3 +41,12 @@ async function putProject(id, formData) {
 }
 
 export default putProject;
+
+/**
+ * NOTE ON PERMISSIONS:
+ * 
+ * The backend has IsOwnerOrReadOnly permission.
+ * Only the project owner can successfully PUT.
+ * If someone else tries, they get 403 Forbidden.
+ */
+``
