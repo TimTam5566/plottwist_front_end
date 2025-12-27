@@ -70,13 +70,6 @@ function ProjectPage() {
         return formatContent(content);
     };
 
-    console.log("Current auth state:", {
-        token: auth?.token,
-        user_id: auth?.user_id,
-        localStorage_token: window.localStorage.getItem("token"),
-        localStorage_user_id: window.localStorage.getItem("user_id")
-    });
-
     const isProjectOwner = useCallback(() => {
         const userId = window.localStorage.getItem("user_id");
         return parseInt(userId) === project?.owner;
@@ -87,13 +80,13 @@ function ProjectPage() {
     , [project?.image]);
 
     const handlePledgeSuccess = useCallback(() => {
-        setShowPledgeModal(false); // Close modal on success
+        setShowPledgeModal(false);
         if (auth?.token) {
             const headers = {
                 "Authorization": `Token ${auth.token}`
             };
 
-            fetch(`${import.meta.env.VITE_API_URL}/projects/${id}/`, { headers })
+            fetch(`${API_URL}/projects/${id}/`, { headers })
                 .then(res => {
                     if (!res.ok) {
                         throw new Error(`Error refreshing project: ${res.status}`);
@@ -118,7 +111,7 @@ function ProjectPage() {
             headers["Authorization"] = `Token ${auth.token}`;
         }
 
-        fetch(`${import.meta.env.VITE_API_URL}/projects/${id}/`, { headers })
+        fetch(`${API_URL}/projects/${id}/`, { headers })
             .then(res => {
                 if (!res.ok) {
                     throw new Error(`Error fetching project: ${res.status}`);
@@ -126,7 +119,6 @@ function ProjectPage() {
                 return res.json();
             })
             .then(data => {
-                console.log("Project data received:", data);
                 setProject(data);
             })
             .catch(err => {
@@ -260,7 +252,7 @@ function ProjectPage() {
                                                 <p className="contribution-author">
                                                     — {pledge.anonymous 
                                                         ? 'A Mysterious Stranger' 
-                                                        : (pledge.pledger?.username || 'Anonymous')}
+                                                        : (pledge.supporter_username || 'A Contributor')}
                                                 </p>
                                             </div>
                                         ))}
@@ -354,3 +346,4 @@ function ProjectPage() {
 }
 
 export default ProjectPage;
+
