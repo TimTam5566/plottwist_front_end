@@ -49,27 +49,30 @@ function ProjectPage() {
     };
 
     // Format verses (for poems - split into stanzas by double newline)
-    const formatVerses = (content) => {
-        if (!content) return null;
+const formatVerses = (content) => {
+    if (!content) return null;
+    
+    // Normalize line breaks: convert \r\n to \n
+    const normalizedContent = content.replace(/\r\n/g, '\n');
+    
+    // Split by double newline to get "stanzas"
+    const stanzas = normalizedContent.split(/\n\n+/);
+    
+    return stanzas.map((stanza, stanzaIndex) => {
+        // Split each stanza by single newline to get verses
+        const verses = stanza.split(/\n/).filter(line => line.trim());
         
-        // First split by double newline to get "stanzas"
-        const stanzas = content.split(/\n\n+/);
-        
-        return stanzas.map((stanza, stanzaIndex) => {
-            // Then split each stanza by single newline to get verses
-            const verses = stanza.split(/\n/).filter(line => line.trim());
-            
-            return (
-                <div key={stanzaIndex} className="poem-stanza">
-                    {verses.map((verse, verseIndex) => (
-                        <p key={verseIndex} className="content-verse">
-                            {verse.trim()}
-                        </p>
-                    ))}
-                </div>
-            );
-        });
-    };
+        return (
+            <div key={stanzaIndex} className="poem-stanza">
+                {verses.map((verse, verseIndex) => (
+                    <p key={verseIndex} className="content-verse">
+                        {verse.trim()}
+                    </p>
+                ))}
+            </div>
+        );
+    });
+};
 
     // Choose formatting based on content type
     const renderContent = (content) => {
