@@ -57,7 +57,7 @@ function ProjectPage() {
         
         return stanzas.map((stanza, stanzaIndex) => {
             // Then split each stanza by single newline to get verses
-            const verses = stanza.split(/\n/).filter(line => line.trim());
+            const verses = stanza.split(/\n\n+/).filter(line => line.trim());
             
             return (
                 <div key={stanzaIndex} className="poem-stanza">
