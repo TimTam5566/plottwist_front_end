@@ -336,6 +336,14 @@
     margin-bottom: 0;
 }
 
+.poem-stanza {
+    margin-bottom: 1.5rem;
+}
+
+.poem-stanza:last-child {
+    margin-bottom: 0;
+}
+
 .no-content {
     font-family: 'Lora', Georgia, serif;
     font-style: italic;
