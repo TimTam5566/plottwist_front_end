@@ -1,8 +1,9 @@
 /**
  * ProjectPage.jsx - Literary Theme
  * 
- * Displays a single project with the full story/poem
- * Each contribution shows the author name underneath
+ * Displays a single project with:
+ * 1. The Full Story/Poem - continuous content for easy reading
+ * 2. Contributors section - credits each author
  */
 
 import { useParams, Link } from "react-router-dom";
@@ -34,44 +35,44 @@ function ProjectPage() {
         return "/images/default.jpg";
     };
 
-    // Format content into paragraphs
+    // Format content into paragraphs (for stories)
     const formatContent = (content) => {
-    if (!content) return null;
-    
-    // Split on double newline OR single newline
-    const paragraphs = content.split(/\n+/).filter(p => p.trim());
-    
-    return paragraphs.map((paragraph, index) => (
-        <p key={index} className="content-paragraph">
-            {paragraph.trim()}
-        </p>
-    ));
+        if (!content) return null;
+        
+        const paragraphs = content.split(/\n\n+/).filter(p => p.trim());
+        
+        return paragraphs.map((paragraph, index) => (
+            <p key={index} className="content-paragraph">
+                {paragraph.trim()}
+            </p>
+        ));
     };
 
+    // Format verses (for poems - split into stanzas by double newline)
     const formatVerses = (content) => {
-    if (!content) return null;
-    
-    // First split by double newline to get "stanzas"
-    const stanzas = content.split(/\n\n+/);
-    
-    return stanzas.map((stanza, stanzaIndex) => {
-        // Then split each stanza by single newline to get verses
-        const verses = stanza.split(/\n/).filter(line => line.trim());
+        if (!content) return null;
         
-        return (
-            <div key={stanzaIndex} className="poem-stanza">
-                {verses.map((verse, verseIndex) => (
-                    <p key={verseIndex} className="content-verse">
-                        {verse.trim()}
-                    </p>
-                ))}
-            </div>
-        );
-    });
-};
+        // First split by double newline to get "stanzas"
+        const stanzas = content.split(/\n\n+/);
+        
+        return stanzas.map((stanza, stanzaIndex) => {
+            // Then split each stanza by single newline to get verses
+            const verses = stanza.split(/\n/).filter(line => line.trim());
+            
+            return (
+                <div key={stanzaIndex} className="poem-stanza">
+                    {verses.map((verse, verseIndex) => (
+                        <p key={verseIndex} className="content-verse">
+                            {verse.trim()}
+                        </p>
+                    ))}
+                </div>
+            );
+        });
+    };
 
     // Choose formatting based on content type
-    const renderContent = (content, isFirstSection = false) => {
+    const renderContent = (content) => {
         if (!content) return <p className="no-content">No content yet...</p>;
         
         if (project?.content_type === 'poem') {
@@ -235,7 +236,7 @@ function ProjectPage() {
                             </div>
                         </section>
 
-                        {/* THE FULL STORY - Combined View */}
+                        {/* THE FULL STORY/POEM - Continuous Content */}
                         <section className="project-section content-section">
                             <h2 className="section-title">
                                 <span className="flourish">❧</span>
@@ -244,29 +245,40 @@ function ProjectPage() {
                             </h2>
                             
                             <div className="content-display full-story">
-                                {/* Starting Content - by project owner */}
-                                <div className="story-section story-opening">
-                                    {renderContent(project.starting_content)}
-                                    <p className="contribution-author">
-                                        — {project.owner_username || 'The Author'}
-                                        <span className="author-note">(Opening)</span>
-                                    </p>
+                                {/* Display current_content as continuous text */}
+                                {renderContent(project.current_content || project.starting_content)}
+                            </div>
+                        </section>
+
+                        {/* CONTRIBUTORS SECTION - Credit to authors */}
+                        <section className="project-section contributors-section">
+                            <h2 className="section-title">
+                                <span className="flourish">❧</span>
+                                Contributors
+                                <span className="flourish">❧</span>
+                            </h2>
+                            
+                            <div className="contributors-list">
+                                {/* Project Owner */}
+                                <div className="contributor-card contributor-owner">
+                                    <span className="contributor-role">Opening by</span>
+                                    <span className="contributor-name">{project.owner_username || 'The Author'}</span>
                                 </div>
 
-                                {/* All Pledges/Contributions */}
+                                {/* Pledge Contributors */}
                                 {project.pledges && project.pledges.length > 0 && (
-                                    <>
-                                        {project.pledges.map((pledge, index) => (
-                                            <div key={pledge.id || index} className="story-section story-contribution">
-                                                {renderContent(pledge.add_content || pledge.content)}
-                                                <p className="contribution-author">
-                                                    — {pledge.anonymous 
-                                                        ? 'A Mysterious Stranger' 
-                                                        : (pledge.supporter_username || 'A Contributor')}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </>
+                                    project.pledges.map((pledge, index) => (
+                                        <div key={pledge.id || index} className="contributor-card">
+                                            <span className="contributor-role">
+                                                Contributed {pledge.amount} {project.content_type === 'poem' ? 'verse' : 'paragraph'}{pledge.amount > 1 ? 's' : ''}
+                                            </span>
+                                            <span className="contributor-name">
+                                                {pledge.anonymous 
+                                                    ? 'A Mysterious Stranger' 
+                                                    : (pledge.supporter_username || 'A Contributor')}
+                                            </span>
+                                        </div>
+                                    ))
                                 )}
                             </div>
                         </section>
@@ -279,20 +291,6 @@ function ProjectPage() {
                                 day: 'numeric'
                             })}
                         </p>
-
-                        {/* Pledge Form */}
-                        {project.is_open && auth?.token && (
-                            <section className="project-section contribute-section">
-                                <h2 className="section-title">
-                                    <span className="flourish">❧</span>
-                                    Add Your Chapter
-                                    <span className="flourish">❧</span>
-                                </h2>
-                                <p className="contribute-text">
-                                    Have something to add to this tale?
-                                </p>
-                            </section>
-                        )}
 
                         {/* Login prompt if not authenticated */}
                         {project.is_open && !auth?.token && (
