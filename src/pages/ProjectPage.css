@@ -308,15 +308,6 @@
     text-indent: 0;
 }
 
-.content-paragraph:first-child::first-letter {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 3.5rem;
-    float: left;
-    line-height: 0.8;
-    padding-right: 0.5rem;
-    color: #8B4513;
-}
-
 .content-paragraph:last-child {
     margin-bottom: 0;
 }
@@ -742,7 +733,63 @@
     }
 }
 /* ===========================
-    Contributors Section
+    Numbered Content - ADD TO ProjectPage.css
+   =========================== */
+
+/* Content number (superscript) */
+.content-number {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.7rem;
+    color: #9B8B7A;  /* Muted grey-brown */
+    vertical-align: super;
+    margin-right: 0.15rem;
+    font-style: normal;
+}
+
+/* Paragraph wrapper for stories */
+.paragraph-wrapper {
+    position: relative;
+}
+
+.paragraph-number {
+    position: absolute;
+    top: 0;
+    left: -1.2rem;
+    font-size: 0.8rem;
+}
+
+/* Drop cap for opening paragraph */
+.first-paragraph::first-letter {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.5rem;
+    float: left;
+    line-height: 1;
+    margin-right: -2rem;
+    padding: 0;
+    color: #8B4513;
+}
+
+/* Numbered content wrapper */
+.numbered-content {
+    position: relative;
+}
+
+/* Content sections */
+.content-section {
+    margin-bottom: 0;
+}
+
+.pledge-section {
+    margin-top: 1.5rem;  /* Space before new contributor's content */
+}
+
+/* For poems - add space between different contributors */
+.content-section + .pledge-section .content-verse:first-child {
+    margin-top: 1rem;
+}
+
+/* ===========================
+    Contributors Section (Updated)
    =========================== */
 
 .contributors-section {
@@ -764,6 +811,10 @@
     text-align: center;
     min-width: 150px;
     transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .contributor-card:hover {
@@ -777,23 +828,44 @@
     background: linear-gradient(145deg, #FFFEF9 0%, #FDF8F0 100%);
 }
 
-.contributor-role {
-    display: block;
+.contributor-number {
     font-family: 'Lora', Georgia, serif;
-    font-size: 0.8rem;
-    font-style: italic;
-    color: #8B7355;
-    margin-bottom: 0.25rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #9B8B7A;  /* Muted grey-brown - matches content numbers */
 }
 
 .contributor-name {
-    display: block;
     font-family: 'Playfair Display', Georgia, serif;
     font-size: 1rem;
     font-weight: 600;
     color: #5D2E1F;
 }
 
+.contributor-role {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: #8B7355;
+}
+
+/* ===========================
+    Responsive Design for Contributors
+   =========================== */
+
+@media (max-width: 600px) {
+    .contributors-list {
+        flex-direction: column;
+    }
+    
+    .contributor-card {
+        min-width: auto;
+    }
+    
+    .content-number {
+        font-size: 0.6rem;
+    }
+}
 /* ===========================
     Responsive Design
    =========================== */
@@ -832,9 +904,7 @@
         padding: 1.5rem;
     }
 
-    .content-paragraph:first-child::first-letter {
-        font-size: 2.5rem;
-    }
+
 }
 
 @media (max-width: 480px) {

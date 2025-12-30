@@ -2,8 +2,8 @@
  * ProjectPage.jsx - Literary Theme
  * 
  * Displays a single project with:
- * 1. The Full Story/Poem - continuous content for easy reading
- * 2. Contributors section - credits each author
+ * 1. Numbered content - each section shows which contributor wrote it
+ * 2. Contributors key - legend showing who wrote what
  */
 
 import { useParams, Link } from "react-router-dom";
@@ -24,6 +24,12 @@ function ProjectPage() {
 
     const { calculateProgress, getContentLabel } = useProjectProgress();
 
+    // Convert number to superscript
+    const toSuperscript = (num) => {
+        const superscripts = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'];
+        return num.toString().split('').map(d => superscripts[parseInt(d)]).join('');
+    };
+
     const getImageUrl = (image) => {
         if (!image) return "/images/default.jpg";
         if (image.startsWith('/media/')) {
@@ -35,53 +41,74 @@ function ProjectPage() {
         return "/images/default.jpg";
     };
 
-    // Format content into paragraphs (for stories)
-    const formatContent = (content) => {
+    // Format story paragraphs with contributor number (only on first paragraph)
+    const formatNumberedParagraphs = (content, contributorNum) => {
         if (!content) return null;
         
-        const paragraphs = content.split(/\n\n+/).filter(p => p.trim());
+        // Normalize line breaks
+        const normalizedContent = content.replace(/\r\n/g, '\n');
+        const paragraphs = normalizedContent.split(/\n\n+/).filter(p => p.trim());
         
         return paragraphs.map((paragraph, index) => (
-            <p key={index} className="content-paragraph">
-                {paragraph.trim()}
+            <div key={index} className="paragraph-wrapper">
+                {index === 0 && (
+                    <span className="content-number paragraph-number">{toSuperscript(contributorNum)}</span>
+                )}
+                <p className={`content-paragraph ${index === 0 && contributorNum === 1 ? 'first-paragraph' : ''}`}>
+                    {paragraph.trim()}
+                </p>
+            </div>
+        ));
+    };
+
+    // Format poem verses with contributor number (only on first line)
+    const formatNumberedVerses = (content, contributorNum) => {
+        if (!content) return null;
+        
+        // Normalize line breaks
+        const normalizedContent = content.replace(/\r\n/g, '\n');
+        const lines = normalizedContent.split(/\n/).filter(line => line.trim());
+        
+        return lines.map((line, index) => (
+            <p key={index} className="content-verse numbered-content">
+                {index === 0 && (
+                    <span className="content-number">{toSuperscript(contributorNum)}</span>
+                )}
+                {line.trim()}
             </p>
         ));
     };
 
-    // Format verses (for poems - split into stanzas by double newline)
-const formatVerses = (content) => {
-    if (!content) return null;
-    
-    // Normalize line breaks: convert \r\n to \n
-    const normalizedContent = content.replace(/\r\n/g, '\n');
-    
-    // Split by double newline to get "stanzas"
-    const stanzas = normalizedContent.split(/\n\n+/);
-    
-    return stanzas.map((stanza, stanzaIndex) => {
-        // Split each stanza by single newline to get verses
-        const verses = stanza.split(/\n/).filter(line => line.trim());
+    // Render all content with contributor numbers
+    const renderNumberedContent = () => {
+        if (!project) return null;
         
-        return (
-            <div key={stanzaIndex} className="poem-stanza">
-                {verses.map((verse, verseIndex) => (
-                    <p key={verseIndex} className="content-verse">
-                        {verse.trim()}
-                    </p>
-                ))}
-            </div>
-        );
-    });
-};
-
-    // Choose formatting based on content type
-    const renderContent = (content) => {
-        if (!content) return <p className="no-content">No content yet...</p>;
+        const isPoem = project.content_type === 'poem';
+        const formatFunc = isPoem ? formatNumberedVerses : formatNumberedParagraphs;
         
-        if (project?.content_type === 'poem') {
-            return formatVerses(content);
+        const sections = [];
+        
+        // 1. Starting content (contributor #1 - owner)
+        if (project.starting_content) {
+            sections.push(
+                <div key="opening" className="content-section">
+                    {formatFunc(project.starting_content, 1)}
+                </div>
+            );
         }
-        return formatContent(content);
+        
+        // 2. Each pledge (contributors #2, #3, etc.)
+        if (project.pledges && project.pledges.length > 0) {
+            project.pledges.forEach((pledge, index) => {
+                sections.push(
+                    <div key={pledge.id || index} className="content-section pledge-section">
+                        {formatFunc(pledge.add_content, index + 2)}
+                    </div>
+                );
+            });
+        }
+        
+        return sections.length > 0 ? sections : <p className="no-content">No content yet...</p>;
     };
 
     const isProjectOwner = useCallback(() => {
@@ -239,7 +266,7 @@ const formatVerses = (content) => {
                             </div>
                         </section>
 
-                        {/* THE FULL STORY/POEM - Continuous Content */}
+                        {/* THE FULL STORY/POEM - Numbered Content */}
                         <section className="project-section content-section">
                             <h2 className="section-title">
                                 <span className="flourish">❧</span>
@@ -248,12 +275,11 @@ const formatVerses = (content) => {
                             </h2>
                             
                             <div className="content-display full-story">
-                                {/* Display current_content as continuous text */}
-                                {renderContent(project.current_content || project.starting_content)}
+                                {renderNumberedContent()}
                             </div>
                         </section>
 
-                        {/* CONTRIBUTORS SECTION - Credit to authors */}
+                        {/* CONTRIBUTORS KEY - Who wrote what */}
                         <section className="project-section contributors-section">
                             <h2 className="section-title">
                                 <span className="flourish">❧</span>
@@ -262,23 +288,25 @@ const formatVerses = (content) => {
                             </h2>
                             
                             <div className="contributors-list">
-                                {/* Project Owner */}
+                                {/* Project Owner - #1 */}
                                 <div className="contributor-card contributor-owner">
-                                    <span className="contributor-role">Opening by</span>
+                                    <span className="contributor-number">{toSuperscript(1)}</span>
                                     <span className="contributor-name">{project.owner_username || 'The Author'}</span>
+                                    <span className="contributor-role">Opening</span>
                                 </div>
 
-                                {/* Pledge Contributors */}
+                                {/* Pledge Contributors - #2, #3, etc. */}
                                 {project.pledges && project.pledges.length > 0 && (
                                     project.pledges.map((pledge, index) => (
                                         <div key={pledge.id || index} className="contributor-card">
-                                            <span className="contributor-role">
-                                                Contributed {pledge.amount} {project.content_type === 'poem' ? 'verse' : 'paragraph'}{pledge.amount > 1 ? 's' : ''}
-                                            </span>
+                                            <span className="contributor-number">{toSuperscript(index + 2)}</span>
                                             <span className="contributor-name">
                                                 {pledge.anonymous 
                                                     ? 'A Mysterious Stranger' 
                                                     : (pledge.supporter_username || 'A Contributor')}
+                                            </span>
+                                            <span className="contributor-role">
+                                                {pledge.amount} {project.content_type === 'poem' ? 'verse' : 'paragraph'}{pledge.amount > 1 ? 's' : ''}
                                             </span>
                                         </div>
                                     ))
