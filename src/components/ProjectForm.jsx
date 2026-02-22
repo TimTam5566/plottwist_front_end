@@ -178,28 +178,28 @@ function ProjectForm({ onSuccess, initialData }) {
         <div className="project-form-wrapper">
             <form onSubmit={handleSubmit} className="project-form" encType="multipart/form-data">
                 <div className="form-header">
-                    <span className="form-icon">✒</span>
+                    <span className="form-icon" aria-hidden="true">✒</span>
                     <h2>Begin a New Tale</h2>
                     <p className="form-subtitle">Every great story starts with a single word...</p>
                 </div>
 
                 {/* API Error from hook */}
                 {submitError && (
-                    <div className="error-message api-error">
-                        <span className="error-icon">📜</span>
+                    <div className="error-message api-error" role="alert" aria-live="assertive">
+                        <span className="error-icon" aria-hidden="true">📜</span>
                         <p>Alas! The magical quill has run dry. {submitError}</p>
                     </div>
                 )}
 
                 {/* Success message */}
                 {success && (
-                    <div className="success-message">
-                        <p>✨ Your tale has been published to the library!</p>
+                    <div className="success-message" role="status" aria-live="polite">
+                        <p><span aria-hidden="true">✨ </span>Your tale has been published to the library!</p>
                     </div>
                 )}
 
                 <div className="form-field">
-                    <label htmlFor="title">Title <span className="required">*</span></label>
+                    <label htmlFor="title">Title <span className="required" aria-label="required">*</span></label>
                     <input
                         type="text"
                         id="title"
@@ -209,12 +209,12 @@ function ProjectForm({ onSuccess, initialData }) {
                         className={validationErrors.title ? 'has-error' : ''}
                     />
                     {validationErrors.title && (
-                        <span className="error-text">{validationErrors.title}</span>
+                        <span className="error-text" id="title-error" role="alert">{validationErrors.title}</span>
                     )}
                 </div>
 
                 <div className="form-field">
-                    <label htmlFor="description">Description <span className="required">*</span></label>
+                    <label htmlFor="description">Description <span className="required" aria-label="required">*</span></label>
                     <textarea 
                         id="description" 
                         value={formData.description} 
@@ -229,7 +229,7 @@ function ProjectForm({ onSuccess, initialData }) {
 
                 <div className="form-row">
                     <div className="form-field">
-                        <label htmlFor="genre">Genre <span className="required">*</span></label>
+                        <label htmlFor="genre">Genre <span className="required" aria-label="required">*</span></label>
                         <select
                             id="genre"
                             name="genre"
@@ -254,7 +254,7 @@ function ProjectForm({ onSuccess, initialData }) {
                     </div>
 
                     <div className="form-field">
-                        <label htmlFor="content_type">Content Type <span className="required">*</span></label>
+                        <label htmlFor="content_type">Content Type <span className="required" aria-label="required">*</span></label>
                         <select
                             id="content_type"
                             name="content_type"
@@ -275,7 +275,7 @@ function ProjectForm({ onSuccess, initialData }) {
                 </div>
 
                 <div className="form-field">
-                    <label htmlFor="starting_content">Opening Words <span className="required">*</span></label>
+                    <label htmlFor="starting_content">Opening Words <span className="required" aria-label="required">*</span></label>
                     <textarea
                         id="starting_content"
                         value={formData.starting_content}
@@ -301,7 +301,7 @@ function ProjectForm({ onSuccess, initialData }) {
                 <div className="form-field">
                     <label htmlFor="goal">
                         {formData.content_type === 'poem' ? 'Target Verses' : 'Target Paragraphs'} 
-                        <span className="required">*</span>
+                        <span className="required" aria-label="required">*</span>
                     </label>
                     <input
                         type="number"
@@ -365,10 +365,10 @@ function ProjectForm({ onSuccess, initialData }) {
                 </div>
 
                 <div className="form-actions">
-                    <button type="submit" className="btn btn--primary" disabled={isLoading}>
+                    <button type="submit" className="btn btn--primary" disabled={isLoading} aria-busy={isLoading}>
                         {isLoading ? (
                             <>
-                                <span className="spinner">✒</span>
+                                <span className="spinner" aria-hidden="true">✒</span>
                                 Writing...
                             </>
                         ) : (
@@ -378,7 +378,7 @@ function ProjectForm({ onSuccess, initialData }) {
                 </div>
 
                 <p className="form-footer">
-                    <span className="required">*</span> Required fields
+                    <span className="required" aria-label="required">*</span> Required fields
                 </p>
             </form>
         </div>

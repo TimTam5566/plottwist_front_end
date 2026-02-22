@@ -34,10 +34,10 @@ function CreateProjectPage() {
     // If not logged in, show login prompt
     if (!auth?.token) {
         return (
-            <div className="create-project-page" ref={pageRef}>
+            <main id="main-content" className="create-project-page" ref={pageRef}>
                 <div className="page-wrap">
                     <div className="login-required-card">
-                        <span className="card-icon">🔐</span>
+                        <span className="card-icon" aria-hidden="true">🔐</span>
                         <h2>A Key is Required</h2>
                         <p>Only registered authors may begin a new tale.</p>
                         <p className="subtitle">Please sign in to unlock your quill.</p>
@@ -51,17 +51,17 @@ function CreateProjectPage() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </main>
         );
     }
 
     // If logged in, show the form
     return (
-        <div className="create-project-page" ref={pageRef}>
+        <main id="main-content" className="create-project-page" ref={pageRef}>
             <div className="page-wrap">
                 <ProjectForm />
             </div>
-        </div>
+        </main>
     );
 }
 

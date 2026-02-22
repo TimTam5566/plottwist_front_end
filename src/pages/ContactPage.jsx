@@ -8,11 +8,11 @@ import './ContactPage.css';
 
 function ContactPage() {
     return (
-        <div className="contact-page">
+        <main id="main-content" className="contact-page">
             <div className="page-wrap">
                 <div className="contact-card">
                     <div className="contact-header">
-                        <span className="contact-icon">✉</span>
+                        <span className="contact-icon" aria-hidden="true">✉</span>
                         <h1>Send Word</h1>
                         <p className="contact-tagline">We'd love to hear from you, dear author</p>
                     </div>
@@ -29,7 +29,7 @@ function ContactPage() {
                             </a>
                         </div>
 
-                        <div className="contact-divider">
+                        <div className="contact-divider" aria-hidden="true">
                             <span>❧</span>
                         </div>
 
@@ -44,7 +44,7 @@ function ContactPage() {
                             </a>
                         </div>
 
-                        <div className="contact-divider">
+                        <div className="contact-divider" aria-hidden="true">
                             <span>❧</span>
                         </div>
 
@@ -70,7 +70,7 @@ function ContactPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
 

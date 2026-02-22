@@ -51,47 +51,53 @@ function SignupForm() {
     };
 
     return (
-        <form className="signup-form" onSubmit={handleSubmit}>
-            <h1>Create account</h1>
-            <p className="lead">Create an account to get started.</p>
+        <main id="main-content">
+            <form className="signup-form" onSubmit={handleSubmit} aria-label="Sign up form">
+                <h1>Create account</h1>
+                <p className="lead">Create an account to get started.</p>
 
-            {error && <div className="form-error">{error}</div>}
+                {error && (
+                    <div className="form-error" role="alert" aria-live="assertive" id="signup-error">
+                        {error}
+                    </div>
+                )}
 
-            <div className="form-field">
-                <label htmlFor="first_name">First Name</label>
-                <input id="first_name" type="text" value={form.first_name} onChange={handleChange} placeholder="Your first name" />
-            </div>
+                <div className="form-field">
+                    <label htmlFor="first_name">First Name</label>
+                    <input id="first_name" type="text" value={form.first_name} onChange={handleChange} placeholder="Your first name" required aria-required="true" />
+                </div>
 
-            <div className="form-field">
-                <label htmlFor="last_name">Last Name</label>
-                <input id="last_name" type="text" value={form.last_name} onChange={handleChange} placeholder="Your last name" />
-            </div>
+                <div className="form-field">
+                    <label htmlFor="last_name">Last Name</label>
+                    <input id="last_name" type="text" value={form.last_name} onChange={handleChange} placeholder="Your last name" required aria-required="true" />
+                </div>
 
-            <div className="form-field">
-                <label htmlFor="username">Username</label>
-                <input id="username" type="text" value={form.username} onChange={handleChange} placeholder="Choose a username" />
-            </div>
+                <div className="form-field">
+                    <label htmlFor="username">Username</label>
+                    <input id="username" type="text" value={form.username} onChange={handleChange} placeholder="Choose a username" required aria-required="true" />
+                </div>
 
-            <div className="form-field">
-                <label htmlFor="email">Email (optional)</label>
-                <input id="email" type="email" value={form.email} onChange={handleChange} placeholder="you@example.com" />
-            </div>
+                <div className="form-field">
+                    <label htmlFor="email">Email (optional)</label>
+                    <input id="email" type="email" value={form.email} onChange={handleChange} placeholder="you@example.com" />
+                </div>
 
-            <div className="form-field">
-                <label htmlFor="password">Password</label>
-                <input id="password" type="password" value={form.password} onChange={handleChange} placeholder="Create a password" />
-            </div>
+                <div className="form-field">
+                    <label htmlFor="password">Password</label>
+                    <input id="password" type="password" value={form.password} onChange={handleChange} placeholder="Create a password" required aria-required="true" aria-describedby={error ? "signup-error" : undefined} />
+                </div>
 
-            <div className="form-field">
-                <label htmlFor="confirmPassword">Confirm Password</label>
-                <input id="confirmPassword" type="password" value={form.confirmPassword} onChange={handleChange} placeholder="Repeat your password" />
-            </div>
+                <div className="form-field">
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <input id="confirmPassword" type="password" value={form.confirmPassword} onChange={handleChange} placeholder="Repeat your password" required aria-required="true" />
+                </div>
 
-            <div className="form-actions">
-                <button type="submit" className="btn btn--primary" disabled={loading}>{loading ? 'Creating…' : 'Create account'}</button>
-                <button type="button" className="btn btn--ghost" onClick={() => navigate('/login')}>Have an account?</button>
-            </div>
-        </form>
+                <div className="form-actions">
+                    <button type="submit" className="btn btn--primary" disabled={loading} aria-busy={loading}>{loading ? 'Creating…' : 'Create account'}</button>
+                    <button type="button" className="btn btn--ghost" onClick={() => navigate('/login')}>Have an account?</button>
+                </div>
+            </form>
+        </main>
     );
 }
 export default SignupForm;

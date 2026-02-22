@@ -37,10 +37,10 @@ function ProjectCard({ project, isOwner = false }) {
             )}
             <img
                 src={getImageUrl(project.image)}
-                alt={project.title || "Project"}
+                alt={`Cover image for ${project.title || 'Project'}${project.genre ? `, ${project.genre}` : ''}`}
                 className="project-image"
+                loading="lazy"
                 onError={(e) => {
-                    console.error(`Image load error for project ${project.id}`);
                     e.target.src = defaultImage;
                 }}
             />

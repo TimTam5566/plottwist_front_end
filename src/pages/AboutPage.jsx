@@ -4,9 +4,9 @@ import './AboutPage.css';
 
 function AboutPage() {
     return (
-        <div className="page-wrap">
+        <main id="main-content" className="page-wrap">
             <AboutPageInfo />
-        </div>
+        </main>
     );
 }
 

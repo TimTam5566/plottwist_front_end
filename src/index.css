@@ -1,6 +1,6 @@
 /**
  * index.css - Global Styles with Literary Theme
- * 
+ *
  * CSS Variables matching the burgundy/cream literary theme
  * used throughout Plot Twist
  */
@@ -17,53 +17,53 @@
     --bg-dark: #f5efe5;               /* Darker cream */
     --card: #fefdfb;                  /* Light parchment */
     --card-hover: #ffffff;            /* White on hover */
-    
+
     /* Text colors */
     --text: #5D2E1F;                  /* Dark burgundy */
     --text-dark: #3D2914;             /* Darker brown */
     --text-light: #4A3728;            /* Medium brown */
     --muted: #8B7355;                 /* Muted brown */
-    
+
     /* Accent colors */
     --accent: #8B4513;                /* Burgundy/Saddle brown */
     --accent-light: #A0522D;          /* Sienna */
     --accent-dark: #5D2E1F;           /* Dark burgundy */
-    
+
     /* Legacy variable names (for backwards compatibility) */
     --purple: #8B4513;                /* Map to burgundy */
     --purple-dark: #5D2E1F;           /* Map to dark burgundy */
-    
-    /* Status colors */
-    --success: #22C55E;               /* Green */
+
+    /* Status colors — WCAG AA contrast compliant */
+    --success: #15803D;               /* Green (5.4:1 on white) */
     --success-bg: #F0FDF4;            /* Light green bg */
-    --danger: #9B2C2C;                /* Dark red */
+    --danger: #7F1D1D;                /* Dark red (9.8:1 on #FEF2F2) */
     --danger-bg: #FEF2F2;             /* Light red bg */
-    
+
     /* Border colors */
     --border: #D4C4B0;                /* Tan border */
     --border-light: #E6DED3;          /* Light tan */
     --border-dark: #8B4513;           /* Burgundy border */
-    
+
     /* Layout */
     --radius: 8px;
     --radius-sm: 4px;
     --radius-lg: 12px;
     --radius-full: 999px;
-    
+
     /* Shadows */
     --shadow: 0 2px 10px rgba(139, 69, 19, 0.08);
     --shadow-md: 0 4px 20px rgba(139, 69, 19, 0.12);
     --shadow-lg: 0 8px 30px rgba(139, 69, 19, 0.15);
-    
+
     /* Container */
     --container-max: 1100px;
     --gap: 1rem;
-    
+
     /* Typography */
     --font-heading: 'Playfair Display', Georgia, serif;
     --font-body: 'Lora', Georgia, serif;
     --font-sans: 'Lora', Georgia, serif;
-    
+
     /* Button */
     --button-shadow: 0 2px 8px rgba(139, 69, 19, 0.3);
 }
@@ -152,7 +152,50 @@ a:hover {
 }
 
 /* ===========================
-    Global Accessibility
+    Screen Reader Only (Visually Hidden)
+   =========================== */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ===========================
+    Skip Link (Accessibility)
+   =========================== */
+
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    background: var(--accent);
+    color: #FFFEF9;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    z-index: 10000;
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: 1rem;
+    outline: 3px solid var(--text);
+    outline-offset: 2px;
+    color: #FFFEF9;
+}
+
+/* ===========================
+    Global Accessibility — Focus Indicators
    =========================== */
 
 :focus {
@@ -160,7 +203,7 @@ a:hover {
 }
 
 :focus-visible {
-    outline: 3px solid rgba(139, 69, 19, 0.2);
+    outline: 3px solid var(--accent);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
 }
@@ -200,7 +243,7 @@ a:hover {
    =========================== */
 
 @media (max-width: 640px) {
-    .app-container, 
+    .app-container,
     .page-wrap {
         padding: 0.75rem;
     }

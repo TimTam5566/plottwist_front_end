@@ -109,22 +109,22 @@ function EditProject() {
     };
 
     return (
-        <div className="edit-project-page">
+        <main id="main-content" className="edit-project-page">
             <div className="page-wrap">
                 <div className="edit-form-container">
                     <div className="form-header">
-                        <span className="form-icon">✎</span>
+                        <span className="form-icon" aria-hidden="true">✎</span>
                         <h1>Revise Your Tale</h1>
                         <p className="form-subtitle">Every story deserves a second draft...</p>
                     </div>
 
                     {error && (
-                        <div className="error-message">
+                        <div className="error-message" role="alert" aria-live="assertive">
                             <p>{error}</p>
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="edit-form">
+                    <form onSubmit={handleSubmit} className="edit-form" aria-label="Edit project form">
                         <div className="form-field">
                             <label htmlFor="title">Title <span className="required">*</span></label>
                             <input
@@ -229,10 +229,10 @@ function EditProject() {
                         </div>
 
                         <div className="form-actions">
-                            <button type="submit" className="btn btn--primary" disabled={loading}>
+                            <button type="submit" className="btn btn--primary" disabled={loading} aria-busy={loading}>
                                 {loading ? (
                                     <>
-                                        <span className="spinner">✒</span>
+                                        <span className="spinner" aria-hidden="true">✒</span>
                                         Saving your revisions...
                                     </>
                                 ) : (
@@ -248,7 +248,7 @@ function EditProject() {
                     </form>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
 

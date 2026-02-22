@@ -56,43 +56,52 @@ function LoginForm() {
     };
 
     return (
-        <form className="login-form" onSubmit={handleSubmit}>
-            <h1>Continue Your Story</h1>
-            <p className="lead">Welcome back, dear author.</p>
-            
-            {error && <div className="error-message">{error}</div>}
-            
-            <div className="form-field">
-                <label htmlFor="username">Pen Name</label>
-                <input
-                    type="text"
-                    id="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    placeholder="Your pen name"
-                    required
-                />
-            </div>
-            <div className="form-field">
-                <label htmlFor="password">Secret Word</label>
-                <input
-                    type="password"
-                    id="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Your secret word"
-                    required
-                />
-            </div>
-            <div className="form-actions">
-                <button type="submit" className="btn btn--primary">Enter the Library</button>
-                <button type="button" className="btn btn--ghost" onClick={() => navigate('/signup')}>
-                    New here? Begin your story
-                </button>
-            </div>
-            
-            <p className="tagline">Every great story deserves a next chapter</p>
-        </form>
+        <main id="main-content">
+            <form className="login-form" onSubmit={handleSubmit} aria-label="Login form">
+                <h1>Continue Your Story</h1>
+                <p className="lead">Welcome back, dear author.</p>
+
+                {error && (
+                    <div className="error-message" role="alert" aria-live="assertive" id="login-error">
+                        {error}
+                    </div>
+                )}
+
+                <div className="form-field">
+                    <label htmlFor="username">Pen Name</label>
+                    <input
+                        type="text"
+                        id="username"
+                        value={formData.username}
+                        onChange={handleChange}
+                        placeholder="Your pen name"
+                        required
+                        aria-required="true"
+                        aria-describedby={error ? "login-error" : undefined}
+                    />
+                </div>
+                <div className="form-field">
+                    <label htmlFor="password">Secret Word</label>
+                    <input
+                        type="password"
+                        id="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="Your secret word"
+                        required
+                        aria-required="true"
+                    />
+                </div>
+                <div className="form-actions">
+                    <button type="submit" className="btn btn--primary">Enter the Library</button>
+                    <button type="button" className="btn btn--ghost" onClick={() => navigate('/signup')}>
+                        New here? Begin your story
+                    </button>
+                </div>
+
+                <p className="tagline">Every great story deserves a next chapter</p>
+            </form>
+        </main>
     );
 }
 
