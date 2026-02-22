@@ -8,7 +8,6 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../hooks/use-auth";
 import useCreatePledge from "../hooks/use-create-pledge";
 import { getWritingPrompt } from "../data/pledgePrompts";
-import postPledge from "../api/post-pledge";
 import "./PledgeForm.css";
 
 const ERROR_MESSAGES = {
@@ -18,14 +17,6 @@ const ERROR_MESSAGES = {
 };
 
 function PledgeForm({ projectId, project, onSuccess }) {
-    console.debug('PledgeForm mounting...', {
-        projectId,
-        project,
-        hasProject: Boolean(project),
-        projectGenre: project?.genre,
-        timestamp: new Date().toISOString()
-    });
-
     const { auth } = useAuth();
     const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
@@ -37,10 +28,6 @@ function PledgeForm({ projectId, project, onSuccess }) {
     const [promptData, setPromptData] = useState(null);
 
     const { createPledge, isLoading, error: submissionError, success } = useCreatePledge();
-
-    useEffect(() => {
-        console.debug('PledgeForm props:', { projectId, project });
-    }, [projectId, project]);
 
     const formatContent = (content) => {
         return content.split(/\n\n+/).map((paragraph, index) => (
@@ -108,7 +95,6 @@ function PledgeForm({ projectId, project, onSuccess }) {
     };
 
     useEffect(() => {
-        console.debug('Project data changed:', project);
         if (project && formData.amount) {
             generateNewPrompt();
         }

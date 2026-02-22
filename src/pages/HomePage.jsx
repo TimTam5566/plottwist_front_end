@@ -11,6 +11,7 @@
 import useProjects from "../hooks/use-projects";
 import ProjectCard from "../components/ProjectCard";
 import WelcomeScroll from "../components/WelcomeScroll";
+import { API_URL } from "../config";
 import "./HomePage.css";
 import { useState } from "react";
 import { useAuth } from "../hooks/use-auth";
@@ -145,7 +146,7 @@ function FeaturedProjectCard({ project, isOwner }) {
     if (!project) return null;
 
     const defaultImage = '/images/default.jpg';
-    const API_URL = import.meta.env.VITE_API_URL || '';
+    // API_URL imported from config.js
 
     const getImageUrl = (image) => {
         if (!image) return defaultImage;

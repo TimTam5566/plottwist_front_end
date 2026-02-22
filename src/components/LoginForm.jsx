@@ -7,6 +7,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
+import { API_URL } from "../config";
 import "./LoginForm.css";
 
 function LoginForm() {
@@ -29,7 +30,7 @@ function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api-token-auth/`, {
+            const response = await fetch(`${API_URL}/api-token-auth/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

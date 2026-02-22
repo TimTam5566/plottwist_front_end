@@ -39,7 +39,7 @@ function SignupForm() {
             if (data.token) {
                 localStorage.setItem('token', data.token);
                 setAuth({ token: data.token });
-                navigate('/create');
+                navigate('/create-project');
             } else {
                 navigate('/login', { state: { signupSuccess: true } });
             }

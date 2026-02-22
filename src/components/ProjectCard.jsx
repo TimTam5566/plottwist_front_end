@@ -8,7 +8,6 @@
  * - Project metadata (genre, type, goal)
  */
 
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { API_URL } from '../config';
 
@@ -74,9 +73,5 @@ function ProjectCard({ project, isOwner = false }) {
         </div>
     );
 }
-
-ProjectCard.defaultProps = {
-    isOwner: false
-};
 
 export default ProjectCard;

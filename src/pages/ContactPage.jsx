@@ -4,7 +4,6 @@
  * A beautifully styled contact page matching the Plot Twist theme
  */
 
-import React from 'react';
 import './ContactPage.css';
 
 function ContactPage() {

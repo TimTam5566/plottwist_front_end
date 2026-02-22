@@ -3,7 +3,6 @@
  * A literary-themed parchment scroll component for the homepage
  */
 
-import React from 'react';
 import './WelcomeScroll.css';
 
 function WelcomeScroll() {

@@ -24,28 +24,19 @@ export default function useCreatePledge() {
             throw new Error(ERROR_MESSAGES.CONTENT_REQUIRED);
         }
 
-        console.log("Starting pledge creation:", { projectId, pledgeData });
         setIsLoading(true);
         setError(null);
         setSuccess(null);
 
         try {
-            console.log("Sending pledge to API...");
             const response = await postPledge(projectId, {
                 ...pledgeData,
                 add_content: pledgeData.add_content.trim()
             });
-            console.log("Pledge API response:", response);
 
             setSuccess("🎉 Thank you for your pledge!");
             return response;
         } catch (err) {
-            console.error("Error creating pledge:", {
-                error: err,
-                message: err.message,
-                projectId,
-                pledgeData
-            });
             setError(err.message);
             throw err;
         } finally {
