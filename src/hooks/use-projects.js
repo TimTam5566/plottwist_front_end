@@ -16,7 +16,9 @@ export default function useProjects() {
     setError(null);
     try {
       const data = await getProjects();
-      setProjects(data);
+      // Handle both paginated response {results: [...]} and flat array [...]
+      const projectList = Array.isArray(data) ? data : data.results || [];
+      setProjects(projectList);
     } catch (err) {
       setError(err);
       console.error("The library gnomes are on strike. No projects today, but we’re negotiating with biscuits.", err);
